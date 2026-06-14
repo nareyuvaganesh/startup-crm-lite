@@ -1,0 +1,58 @@
+const sampleLeads = [
+  {
+    id: "1",
+    name: "Rahul Sharma",
+    company: "TechNova",
+    email: "rahul@technova.com",
+    phone: "9876543210",
+    status: "New",
+    source: "Website",
+  },
+  {
+    id: "2",
+    name: "Priya Reddy",
+    company: "CloudSoft",
+    email: "priya@cloudsoft.com",
+    phone: "9876543211",
+    status: "New",
+    source: "Referral",
+  },
+  {
+    id: "3",
+    name: "Arjun Kumar",
+    company: "InfoSys Labs",
+    email: "arjun@infosyslabs.com",
+    phone: "9876543212",
+    status: "Contacted",
+    source: "LinkedIn",
+  },
+  {
+    id: "4",
+    name: "Sneha Patel",
+    company: "GrowthHub",
+    email: "sneha@growthhub.com",
+    phone: "9876543213",
+    status: "Meeting Scheduled",
+    source: "Email Campaign",
+  },
+  {
+    id: "5",
+    name: "Vikram Singh",
+    company: "DigitalEdge",
+    email: "vikram@digitaledge.com",
+    phone: "9876543214",
+    status: "Won",
+    source: "Website",
+  },
+  {
+    id: "6",
+    name: "Anjali Verma",
+    company: "FutureWorks",
+    email: "anjali@futureworks.com",
+    phone: "9876543215",
+    status: "Lost",
+    source: "Cold Call",
+  },
+];
+
+export default sampleLeads;
