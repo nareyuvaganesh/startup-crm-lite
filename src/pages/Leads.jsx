@@ -10,10 +10,11 @@ import LeadTable from "../components/leads/LeadTable";
 import LeadCard from "../components/leads/LeadCard";
 
 export default function Leads() {
-  const { leads, addLead } = useLeads();
+  const { leads, addLead, updateLead, deleteLead } = useLeads();
 
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilter, setActiveFilter] = useState("All");
+  const [editingLead, setEditingLead] = useState(null);
 
   const filteredLeads = leads
     .filter(
@@ -40,7 +41,12 @@ export default function Leads() {
         Lead Management
       </h1>
 
-      <LeadForm onAddLead={addLead} />
+      <LeadForm
+        onAddLead={addLead}
+        onUpdateLead={updateLead}
+        editingLead={editingLead}
+        onCancelEdit={() => setEditingLead(null)}
+      />
 
       <div className="mb-4">
         <SearchBar
@@ -71,6 +77,8 @@ export default function Leads() {
           <LeadCard
             key={lead.id || lead.email}
             lead={lead}
+            onEdit={setEditingLead}
+            onDelete={deleteLead}
           />
         ))}
       </div>

@@ -1,6 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function LeadForm({ onAddLead }) {
+export default function LeadForm({
+  onAddLead,
+  onUpdateLead,
+  editingLead,
+  onCancelEdit,
+}) {
   const [formData, setFormData] = useState({
     name: "",
     company: "",
@@ -9,10 +14,32 @@ export default function LeadForm({ onAddLead }) {
     status: "New",
   });
 
+  useEffect(() => {
+    if (editingLead) {
+      setFormData({
+        name: editingLead.name || "",
+        company: editingLead.company || "",
+        email: editingLead.email || "",
+        phone: editingLead.phone || "",
+        status: editingLead.status || "New",
+      });
+    }
+  }, [editingLead]);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
+    });
+  };
+
+  const resetForm = () => {
+    setFormData({
+      name: "",
+      company: "",
+      email: "",
+      phone: "",
+      status: "New",
     });
   };
 
@@ -24,15 +51,14 @@ export default function LeadForm({ onAddLead }) {
       return;
     }
 
-    onAddLead(formData);
+    if (editingLead) {
+      onUpdateLead(editingLead.id, formData);
+      onCancelEdit();
+    } else {
+      onAddLead(formData);
+    }
 
-    setFormData({
-      name: "",
-      company: "",
-      email: "",
-      phone: "",
-      status: "New",
-    });
+    resetForm();
   };
 
   return (
@@ -41,7 +67,7 @@ export default function LeadForm({ onAddLead }) {
       className="bg-white dark:bg-gray-800 p-4 rounded-xl shadow mb-6 transition-colors duration-200"
     >
       <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-        Add Lead
+        {editingLead ? "Edit Lead" : "Add Lead"}
       </h2>
 
       <div className="grid gap-3">
@@ -99,8 +125,21 @@ export default function LeadForm({ onAddLead }) {
           type="submit"
           className="bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
-          Add Lead
+          {editingLead ? "Update Lead" : "Add Lead"}
         </button>
+
+        {editingLead && (
+          <button
+            type="button"
+            onClick={() => {
+              resetForm();
+              onCancelEdit();
+            }}
+            className="bg-gray-500 text-white py-2 rounded hover:bg-gray-600"
+          >
+            Cancel Edit
+          </button>
+        )}
       </div>
     </form>
   );
