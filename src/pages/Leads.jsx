@@ -42,6 +42,7 @@ export default function Leads() {
       </h1>
 
       <LeadForm
+        key={editingLead ? editingLead.id : "new"}
         onAddLead={addLead}
         onUpdateLead={updateLead}
         editingLead={editingLead}
