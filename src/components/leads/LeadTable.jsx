@@ -1,38 +1,125 @@
 import StatusBadge from "./StatusBadge";
+import { Pencil, Trash2 } from "lucide-react";
 
-export default function LeadTable({ leads }) {
+/**
+ * LeadTable component
+ * Renders a data-dense, tabular view listing all lead records.
+ * Columns: Name, Company, Status, Email, Source, Date Added, and Actions.
+ * Features:
+ * - Responsive scroll container mapping to prevent layout breaks on small screen zones.
+ * - Pill-shaped Status indicators.
+ * - Date formatting for the 'Date Added' parameter.
+ * - Interactive action buttons for Edit and Delete operations.
+ * 
+ * @component
+ * @param {object} props - Component props
+ * @param {Array<object>} props.leads - Array of lead data records
+ * @param {function} props.onEdit - Callback invoked on Edit button click
+ * @param {function} props.onDelete - Callback invoked on Delete button click
+ */
+export default function LeadTable({ leads = [], onEdit, onDelete }) {
+  /**
+   * Formats ISO timestamps into human-readable shorthand dates.
+   * 
+   * @param {string} dateString - The ISO date representation
+   * @returns {string} Formatted date (e.g. "Jun 16, 2026")
+   */
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    try {
+      const date = new Date(dateString);
+      return date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      });
+    } catch {
+      return "N/A";
+    }
+  };
+
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow p-4 overflow-x-auto transition-colors duration-200">
-      <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
-        All Leads
-      </h2>
-
-      <table className="w-full">
-        <thead>
-          <tr className="border-b text-left dark:border-gray-700">
-            <th className="p-2">Name</th>
-            <th className="p-2">Company</th>
-            <th className="p-2">Status</th>
-            <th className="p-2">Email</th>
-          </tr>
-        </thead>
-
-        <tbody>
-          {leads.map((lead, index) => (
-            <tr
-              key={index}
-              className="border-b dark:border-gray-700"
-            >
-              <td className="p-2">{lead.name}</td>
-              <td className="p-2">{lead.company}</td>
-              <td className="p-2">
-                <StatusBadge status={lead.status} />
-              </td>
-              <td className="p-2">{lead.email}</td>
+    <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 overflow-hidden transition-all duration-300">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left border-collapse min-w-[700px]">
+          <thead>
+            <tr className="border-b border-gray-100 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50 text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <th className="py-4 px-4 pl-6">Name</th>
+              <th className="py-4 px-4">Company</th>
+              <th className="py-4 px-4">Status</th>
+              <th className="py-4 px-4">Email</th>
+              <th className="py-4 px-4">Source</th>
+              <th className="py-4 px-4">Date Added</th>
+              <th className="py-4 px-4 pr-6 text-right">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody className="divide-y divide-gray-50 dark:divide-gray-750">
+            {leads.length === 0 ? (
+              <tr>
+                <td colSpan="7" className="py-10 text-center text-gray-400 dark:text-gray-500 text-sm font-medium">
+                  No leads matching the active search parameters.
+                </td>
+              </tr>
+            ) : (
+              leads.map((lead) => (
+                <tr
+                  key={lead.id || lead.email}
+                  className="hover:bg-slate-50/40 dark:hover:bg-gray-700/10 transition-colors duration-150 group"
+                >
+                  {/* Lead Name */}
+                  <td className="py-3.5 px-4 pl-6 font-bold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                    {lead.name}
+                  </td>
+                  {/* Company */}
+                  <td className="py-3.5 px-4 text-sm text-gray-600 dark:text-gray-300">
+                    {lead.company}
+                  </td>
+                  {/* Status */}
+                  <td className="py-3.5 px-4">
+                    <StatusBadge status={lead.status} />
+                  </td>
+                  {/* Email */}
+                  <td className="py-3.5 px-4 text-sm text-gray-600 dark:text-gray-300">
+                    <a href={`mailto:${lead.email}`} className="hover:underline">
+                      {lead.email}
+                    </a>
+                  </td>
+                  {/* Source */}
+                  <td className="py-3.5 px-4 text-sm text-gray-500 dark:text-gray-400">
+                    {lead.source || "Website"}
+                  </td>
+                  {/* Date Added */}
+                  <td className="py-3.5 px-4 text-sm text-gray-500 dark:text-gray-400">
+                    {formatDate(lead.createdAt)}
+                  </td>
+                  {/* Actions */}
+                  <td className="py-3.5 px-4 pr-6 text-right">
+                    <div className="flex items-center justify-end gap-1.5">
+                      {/* Edit Button */}
+                      <button
+                        onClick={() => onEdit(lead)}
+                        aria-label={`Edit lead ${lead.name}`}
+                        className="p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg cursor-pointer focus:outline-none transition-colors"
+                      >
+                        <Pencil size={15} className="stroke-[2.2]" />
+                      </button>
+
+                      {/* Delete Button */}
+                      <button
+                        onClick={() => onDelete(lead.id)}
+                        aria-label={`Delete lead ${lead.name}`}
+                        className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer focus:outline-none transition-colors"
+                      >
+                        <Trash2 size={15} className="stroke-[2.2]" />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

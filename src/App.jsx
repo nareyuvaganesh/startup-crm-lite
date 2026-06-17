@@ -21,8 +21,8 @@ function App() {
           <Sidebar />
 
           {/* Main content viewport where dynamic page views are swapped by the router switch */}
-          {/* pb-24 padding bottom on mobile prevents the bottom fixed nav-bar from covering content */}
-          <main className="flex-1 p-4 md:p-6 pb-24 md:pb-6 text-gray-900 dark:text-white">
+          {/* pt-20 padding top on mobile prevents the top fixed header bar from covering page content */}
+          <main className="flex-1 p-4 pt-20 md:p-6 pb-6 text-gray-900 dark:text-white">
             {/* The routes list that matches current URL paths and dynamically renders lazy-loaded pages */}
             <AppRoutes />
           </main>

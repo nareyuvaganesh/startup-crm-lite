@@ -9,6 +9,14 @@ const Dashboard = lazy(() => import("../pages/Dashboard"));
 const Leads = lazy(() => import("../pages/Leads"));
 // Use React.lazy to dynamic-import the Analytics page component, splitting it into its own bundle.
 const Analytics = lazy(() => import("../pages/Analytics"));
+// Use React.lazy to dynamic-import the Profile page component, splitting it into its own bundle.
+const Profile = lazy(() => import("../pages/Profile"));
+// Use React.lazy to dynamic-import the Reports page component, splitting it into its own bundle.
+const Reports = lazy(() => import("../pages/Reports"));
+// Use React.lazy to dynamic-import the Settings page component, splitting it into its own bundle.
+const Settings = lazy(() => import("../pages/Settings"));
+// Use React.lazy to dynamic-import the HelpSupport page component, splitting it into its own bundle.
+const HelpSupport = lazy(() => import("../pages/HelpSupport"));
 // Use React.lazy to dynamic-import the NotFound page component, splitting it into its own bundle.
 const NotFound = lazy(() => import("../pages/NotFound"));
 
@@ -46,7 +54,14 @@ export default function AppRoutes() {
         <Route path="/leads" element={<Leads />} />
         {/* Defines the Analytics page route mapped to the "/analytics" path */}
         <Route path="/analytics" element={<Analytics />} />
-        {/* Fallback wildcard route to match any unregistered URLs and render the NotFound component */}
+        {/* Defines the Profile page route mapped to the "/profile" path */}
+        <Route path="/profile" element={<Profile />} />
+        {/* Defines the Reports page route mapped to the "/reports" path */}
+        <Route path="/reports" element={<Reports />} />
+        {/* Defines the Settings page route mapped to the "/settings" path */}
+        <Route path="/settings" element={<Settings />} />
+        {/* Defines the Help & Support page route mapped to the "/help" path */}
+        <Route path="/help" element={<HelpSupport />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
