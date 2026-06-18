@@ -70,10 +70,10 @@ export default function PipelineOverview({ leads = [] }) {
   });
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+    <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
       <div className="flex justify-between items-center mb-6">
         <div>
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+          <h2 className="text-lg font-bold text-gray-900 dark:text-white sm:text-xl">
             Sales Pipeline Overview
           </h2>
           <p className="text-sm text-gray-400 dark:text-gray-500">
@@ -117,7 +117,7 @@ export default function PipelineOverview({ leads = [] }) {
       </div>
 
       {/* Legend & Details Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         {Object.entries(STATUS_METADATA).map(([status, meta]) => {
           const count = aggregates[status] || 0;
           const percentage = totalLeads > 0 ? (count / totalLeads) * 100 : 0;

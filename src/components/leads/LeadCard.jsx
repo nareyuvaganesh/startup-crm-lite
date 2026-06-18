@@ -39,7 +39,7 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
         {/* Detailed parameters */}
         <div className="space-y-2 text-sm mt-4">
           {lead.email && (
-            <div className="flex items-center gap-2.5 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300">
               <Mail className="w-4 h-4 text-gray-400 shrink-0" />
               <a 
                 href={`mailto:${lead.email}`} 
@@ -50,7 +50,7 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
             </div>
           )}
           {lead.phone && (
-            <div className="flex items-center gap-2.5 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300">
               <Phone className="w-4 h-4 text-gray-400 shrink-0" />
               <a 
                 href={`tel:${lead.phone}`} 
@@ -69,7 +69,7 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
         <button
           onClick={() => onEdit(lead)}
           aria-label={`Edit lead ${lead.name}`}
-          className="flex items-center justify-center p-2 text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all"
+          className="flex min-h-11 min-w-11 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-blue-50 hover:text-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500/30 dark:text-gray-400 dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
         >
           <Pencil className="w-4 h-4 stroke-[2.2]" />
         </button>
@@ -78,7 +78,7 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
         <button
           onClick={() => onDelete(lead.id)}
           aria-label={`Delete lead ${lead.name}`}
-          className="flex items-center justify-center p-2 text-gray-550 dark:text-gray-450 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/30 transition-all"
+          className="flex min-h-11 min-w-11 items-center justify-center rounded-xl text-gray-500 transition-all hover:bg-red-50 hover:text-red-600 focus:outline-none focus:ring-2 focus:ring-red-500/30 dark:text-gray-400 dark:hover:bg-red-950/20 dark:hover:text-red-400"
         >
           <Trash2 className="w-4 h-4 stroke-[2.2]" />
         </button>

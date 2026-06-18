@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { User, Mail, Phone, MapPin, Calendar, CheckCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import { useProfile } from "../context/ProfileContext";
 
 /**
  * Profile Page Component
@@ -14,18 +15,7 @@ import toast from "react-hot-toast";
  * @component
  */
 export default function Profile() {
-  // Initial user state
-  const [profile, setProfile] = useState({
-    firstName: "John",
-    lastName: "Doe",
-    email: "john.doe@startupcrm.io",
-    phone: "9876543210",
-    company: "Acme Enterprises",
-    role: "Founder & CEO",
-    location: "San Francisco, CA",
-    joinedDate: "June 2025",
-    department: "Executive Operations",
-  });
+  const { profile, setProfile } = useProfile();
 
   const [formState, setFormState] = useState({ ...profile });
   const [isSaving, setIsSaving] = useState(false);
@@ -111,21 +101,21 @@ export default function Profile() {
 
           {/* Quick Info Details */}
           <div className="space-y-3.5 text-left text-sm">
-            <div className="flex items-center gap-3 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Mail className="w-4 h-4 text-gray-400 shrink-0" />
               <span className="truncate" title={profile.email}>
                 {profile.email}
               </span>
             </div>
-            <div className="flex items-center gap-3 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Phone className="w-4 h-4 text-gray-400 shrink-0" />
               <span>{profile.phone}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
               <span>{profile.location}</span>
             </div>
-            <div className="flex items-center gap-3 text-gray-650 dark:text-gray-300">
+            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
               <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
               <span>Joined {profile.joinedDate}</span>
             </div>
@@ -265,12 +255,12 @@ export default function Profile() {
             </div>
 
             {/* Buttons control footer panel */}
-            <div className="flex justify-end gap-3 pt-4 border-t border-gray-150 dark:border-gray-700/80">
+            <div className="flex justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700/80">
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={isSaving}
-                className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-650 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700/50 border border-gray-200 dark:border-gray-700 cursor-pointer focus:outline-none disabled:opacity-50"
+                className="px-5 py-2.5 rounded-xl text-sm font-bold text-gray-600 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700/50 border border-gray-200 dark:border-gray-700 cursor-pointer focus:outline-none disabled:opacity-50"
               >
                 Cancel
               </button>

@@ -4,14 +4,19 @@ import "./index.css";
 import App from "./App.jsx";
 
 import { LeadProvider } from "./context/LeadContext";
+import { ProfileProvider } from "./context/ProfileContext";
 import { ThemeProvider } from "./context/ThemeContext";
+import ThemeAwareToaster from "./components/common/ThemeAwareToaster";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
     <LeadProvider>
-      <ThemeProvider>
-        <App />
-      </ThemeProvider>
+      <ProfileProvider>
+        <ThemeProvider>
+          <App />
+          <ThemeAwareToaster />
+        </ThemeProvider>
+      </ProfileProvider>
     </LeadProvider>
   </StrictMode>
 );

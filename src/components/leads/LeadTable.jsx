@@ -41,7 +41,7 @@ export default function LeadTable({ leads = [], onEdit, onDelete }) {
   return (
     <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 overflow-hidden transition-all duration-300">
       <div className="overflow-x-auto">
-        <table className="w-full text-left border-collapse min-w-[700px]">
+        <table className="min-w-[760px] w-full border-collapse text-left lg:min-w-full">
           <thead>
             <tr className="border-b border-gray-100 dark:border-gray-700 bg-slate-50/50 dark:bg-gray-800/50 text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
               <th className="py-4 px-4 pl-6">Name</th>
@@ -53,7 +53,7 @@ export default function LeadTable({ leads = [], onEdit, onDelete }) {
               <th className="py-4 px-4 pr-6 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-50 dark:divide-gray-750">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
             {leads.length === 0 ? (
               <tr>
                 <td colSpan="7" className="py-10 text-center text-gray-400 dark:text-gray-500 text-sm font-medium">
@@ -99,7 +99,7 @@ export default function LeadTable({ leads = [], onEdit, onDelete }) {
                       <button
                         onClick={() => onEdit(lead)}
                         aria-label={`Edit lead ${lead.name}`}
-                        className="p-1.5 text-gray-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-lg cursor-pointer focus:outline-none transition-colors"
+                        className="grid min-h-11 min-w-11 place-items-center rounded-lg text-gray-400 transition-colors hover:bg-blue-50 hover:text-blue-600 focus:outline-none dark:hover:bg-blue-900/20 dark:hover:text-blue-400"
                       >
                         <Pencil size={15} className="stroke-[2.2]" />
                       </button>
@@ -108,7 +108,7 @@ export default function LeadTable({ leads = [], onEdit, onDelete }) {
                       <button
                         onClick={() => onDelete(lead.id)}
                         aria-label={`Delete lead ${lead.name}`}
-                        className="p-1.5 text-gray-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg cursor-pointer focus:outline-none transition-colors"
+                        className="grid min-h-11 min-w-11 place-items-center rounded-lg text-gray-400 transition-colors hover:bg-red-50 hover:text-red-600 focus:outline-none dark:hover:bg-red-950/20 dark:hover:text-red-400"
                       >
                         <Trash2 size={15} className="stroke-[2.2]" />
                       </button>

@@ -4,6 +4,7 @@ import StatsCard from "../components/dashboard/StatsCard";
 import PipelineOverview from "../components/dashboard/PipelineOverview";
 import RecentLeads from "../components/dashboard/RecentLeads";
 import QuickActions from "../components/dashboard/QuickActions";
+import DateWidget from "../components/dashboard/DateWidget";
 import { Users, DollarSign, Award, TrendingUp } from "lucide-react";
 
 /**
@@ -32,7 +33,7 @@ export default function Dashboard() {
   
   const revenueAllTime = leads
     .filter((lead) => lead.status === "Won")
-    .reduce((sum, lead) => sum + (Number(lead.value) || 0), 0);
+    .reduce((sum, lead) => sum + (Number(lead.amount ?? lead.value) || 0), 0);
 
   const conversionRateAllTime = totalLeadsAllTime > 0
     ? Math.round((wonLeadsAllTime / totalLeadsAllTime) * 100)
@@ -43,27 +44,29 @@ export default function Dashboard() {
   ).length;
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="mx-auto max-w-7xl space-y-5 lg:space-y-6">
       {/* Header welcome banner */}
-      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
         <div>
-          <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+          <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
             Dashboard
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
             Welcome back! Here's a quick summary of your pipeline health.
           </p>
         </div>
+        <DateWidget />
       </div>
 
       {/* Stats Cards Row - 1 col on mobile, 2 on tablet, 4 on desktop */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5">
         {/* Total Leads Card */}
         <StatsCard
           title="Total Leads"
           value={totalLeadsAllTime}
           icon={Users}
           change={monthlyKpis.leadGrowth}
+          trendLabel="vs last month"
           color="blue"
         />
 
@@ -73,6 +76,7 @@ export default function Dashboard() {
           value={`$${revenueAllTime.toLocaleString()}`}
           icon={DollarSign}
           change={monthlyKpis.revenueGrowth}
+          trendLabel="revenue growth"
           color="green"
         />
 
@@ -82,6 +86,7 @@ export default function Dashboard() {
           value={`${conversionRateAllTime}%`}
           icon={Award}
           change={monthlyKpis.conversionGrowth}
+          trendLabel="conversion"
           color="yellow"
         />
 
@@ -91,6 +96,7 @@ export default function Dashboard() {
           value={activeLeadsAllTime}
           icon={TrendingUp}
           change={monthlyKpis.activeGrowth}
+          trendLabel="active leads"
           color="blue"
         />
       </div>
@@ -101,14 +107,14 @@ export default function Dashboard() {
       </div>
 
       {/* Split Panel: Recent Leads and Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
         {/* Recent Leads - Takes 2/3 of space on desktop */}
-        <div className="lg:col-span-2">
+        <div>
           <RecentLeads leads={leads} />
         </div>
 
         {/* Quick Actions - Takes 1/3 of space on desktop */}
-        <div className="lg:col-span-1">
+        <div>
           <QuickActions />
         </div>
       </div>

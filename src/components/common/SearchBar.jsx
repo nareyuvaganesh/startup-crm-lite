@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 
 /**
@@ -10,25 +10,34 @@ import { Search, X } from "lucide-react";
  * @param {function} props.onChange - Called with a synthetic event after debounce
  */
 export default function SearchBar({ value, onChange }) {
+  const [prevValue, setPrevValue] = useState(value);
   const [localValue, setLocalValue] = useState(value);
 
-  useEffect(() => {
+  // Sync localValue with prop value when it changes from the parent (e.g. cleared filters)
+  if (value !== prevValue) {
+    setPrevValue(value);
     setLocalValue(value);
-  }, [value]);
+  }
+
+  // Use a ref for onChange to prevent the debounce timer from resetting if onChange reference changes
+  const onChangeRef = useRef(onChange);
+  useEffect(() => {
+    onChangeRef.current = onChange;
+  }, [onChange]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (localValue !== value) {
-        onChange({ target: { value: localValue } });
+        onChangeRef.current({ target: { value: localValue } });
       }
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [localValue, value, onChange]);
+  }, [localValue, value]);
 
   const handleClear = () => {
     setLocalValue("");
-    onChange({ target: { value: "" } });
+    onChangeRef.current({ target: { value: "" } });
   };
 
   return (
@@ -44,14 +53,14 @@ export default function SearchBar({ value, onChange }) {
         placeholder="Search by name, company, or email..."
         value={localValue}
         onChange={(e) => setLocalValue(e.target.value)}
-        className="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 bg-slate-50 dark:bg-gray-750 text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 focus:border-blue-500 transition-all duration-200"
+        className="min-h-11 w-full rounded-xl border border-gray-200 bg-slate-50 py-2.5 pl-10 pr-10 text-sm text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
       />
       {localValue && (
         <button
           type="button"
           onClick={handleClear}
           aria-label="Clear search"
-          className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-200/60 dark:hover:bg-gray-700/60 transition-colors duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/40"
+          className="absolute right-0 top-1/2 grid min-h-11 min-w-11 -translate-y-1/2 place-items-center rounded-lg text-gray-400 transition-colors duration-200 hover:bg-gray-200/60 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:hover:bg-gray-700/60 dark:hover:text-gray-300"
         >
           <X size={16} />
         </button>

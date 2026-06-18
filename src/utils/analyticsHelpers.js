@@ -72,10 +72,10 @@ export const calculateKPIs = (currentLeads, previousLeads) => {
   // Revenue Generated: sum of deal values for Won leads (handling string values just in case)
   const revenue = currentLeads
     .filter(l => l.status === "Won")
-    .reduce((sum, l) => sum + (Number(l.value) || 0), 0);
+    .reduce((sum, l) => sum + (Number(l.amount ?? l.value) || 0), 0);
   const prevRevenue = previousLeads
     .filter(l => l.status === "Won")
-    .reduce((sum, l) => sum + (Number(l.value) || 0), 0);
+    .reduce((sum, l) => sum + (Number(l.amount ?? l.value) || 0), 0);
   const revenueGrowth = prevRevenue > 0 ? ((revenue - prevRevenue) / prevRevenue) * 100 : 0;
 
   // Average Response Time: average of responseTime field (hours)
@@ -109,7 +109,7 @@ export const getLeadGrowthData = (currentLeads, days) => {
   
   currentLeads.forEach(lead => {
     const d = new Date(lead.createdAt);
-    let key = "";
+    let key;
     
     if (days <= 7) {
       // Group by weekday name
@@ -131,7 +131,7 @@ export const getLeadGrowthData = (currentLeads, days) => {
     const getFirstTime = (keyStr) => {
       const match = currentLeads.find(l => {
         const d = new Date(l.createdAt);
-        let checkKey = "";
+        let checkKey;
         if (days <= 7) checkKey = d.toLocaleDateString("en-US", { weekday: "short" });
         else if (days <= 90) checkKey = d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
         else checkKey = d.toLocaleDateString("en-US", { month: "short" });
@@ -507,7 +507,7 @@ export const generateInsights = (currentLeads, kpis) => {
     statusCount[l.status] = (statusCount[l.status] || 0) + 1;
   });
   
-  let bottleneck = "Proposal Sent";
+  let bottleneck;
   if ((statusCount["Proposal Sent"] || 0) > (statusCount["Won"] || 0) * 1.5) {
     bottleneck = "Proposal Sent -> Won (High drop-off between proposals and won deals)";
   } else if ((statusCount["Meeting Scheduled"] || 0) > (statusCount["Proposal Sent"] || 0) * 1.5) {
@@ -550,4 +550,217 @@ export const generateInsights = (currentLeads, kpis) => {
     growthSummary,
     recommendations
   };
+};
+
+const ANALYTICS_STATUSES = [
+  "New",
+  "Contacted",
+  "Meeting Scheduled",
+  "Proposal Sent",
+  "Won",
+  "Lost",
+];
+
+const validDate = (value) => {
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? null : date;
+};
+
+const leadAmount = (lead) => Math.max(0, Number(lead?.amount ?? lead?.value) || 0);
+
+const monthKey = (date) =>
+  `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
+
+const monthLabel = (date) =>
+  date.toLocaleDateString("en-US", { month: "short", year: "2-digit" });
+
+export const filterLeadsByRange = (leads = [], range = "30d", now = new Date()) => {
+  const safeLeads = Array.isArray(leads) ? leads : [];
+  let cutoff;
+
+  if (range === "year") {
+    cutoff = new Date(now.getFullYear(), 0, 1);
+  } else {
+    const days = Number.parseInt(range, 10) || 30;
+    cutoff = new Date(now);
+    cutoff.setDate(cutoff.getDate() - days);
+  }
+
+  return safeLeads.filter((lead) => {
+    const date = validDate(lead?.createdAt);
+    return date && date >= cutoff && date <= now;
+  });
+};
+
+export const calculateStatusDistribution = (leads = []) => {
+  const counts = Object.fromEntries(ANALYTICS_STATUSES.map((status) => [status, 0]));
+  leads.forEach((lead) => {
+    const status = ANALYTICS_STATUSES.includes(lead?.status) ? lead.status : "New";
+    counts[status] += 1;
+  });
+  return ANALYTICS_STATUSES.map((name) => ({ name, value: counts[name] }));
+};
+
+const buildMonthlyMap = (leads = []) => {
+  const months = new Map();
+  leads.forEach((lead) => {
+    const date = validDate(lead?.createdAt);
+    if (!date) return;
+    const key = monthKey(date);
+    if (!months.has(key)) {
+      months.set(key, {
+        key,
+        name: monthLabel(date),
+        timestamp: new Date(date.getFullYear(), date.getMonth(), 1).getTime(),
+        leads: 0,
+        won: 0,
+        revenue: 0,
+      });
+    }
+    const month = months.get(key);
+    month.leads += 1;
+    if (lead.status === "Won") {
+      month.won += 1;
+      month.revenue += leadAmount(lead);
+    }
+  });
+  return [...months.values()].sort((a, b) => a.timestamp - b.timestamp);
+};
+
+export const calculateMonthlyLeads = (leads = []) =>
+  buildMonthlyMap(leads).map(({ name, leads: total }) => ({ name, leads: total }));
+
+export const calculateConversionByMonth = (leads = []) =>
+  buildMonthlyMap(leads).map(({ name, leads: total, won }) => ({
+    name,
+    conversionRate: total ? Number(((won / total) * 100).toFixed(1)) : 0,
+  }));
+
+export const calculateRevenueByMonth = (leads = []) =>
+  buildMonthlyMap(leads).map(({ name, revenue }) => ({ name, revenue }));
+
+export const calculatePipelineValue = (leads = []) =>
+  leads
+    .filter((lead) => !["Won", "Lost"].includes(lead?.status))
+    .reduce((sum, lead) => sum + leadAmount(lead), 0);
+
+export const calculateWonRevenue = (leads = []) =>
+  leads
+    .filter((lead) => lead?.status === "Won")
+    .reduce((sum, lead) => sum + leadAmount(lead), 0);
+
+export const calculateAverageSalesCycle = (leads = []) => {
+  const cycles = leads
+    .filter((lead) => lead?.status === "Won")
+    .map((lead) => {
+      if (Number.isFinite(Number(lead.salesCycleDays))) return Number(lead.salesCycleDays);
+      const start = validDate(lead.createdAt);
+      const end = validDate(lead.closedAt || lead.wonAt || lead.updatedAt);
+      if (start && end && end >= start) {
+        return Math.max(1, (end - start) / 86400000);
+      }
+      return Math.max(1, (Number(lead.responseTime) || 4) * 3);
+    });
+
+  return cycles.length
+    ? Number((cycles.reduce((sum, value) => sum + value, 0) / cycles.length).toFixed(1))
+    : 0;
+};
+
+export const calculateLostRate = (leads = []) =>
+  leads.length
+    ? Number(((leads.filter((lead) => lead?.status === "Lost").length / leads.length) * 100).toFixed(1))
+    : 0;
+
+export const calculateLeadSources = (leads = []) => {
+  const sources = new Map();
+  leads.forEach((lead) => {
+    const source = lead?.source || "Other";
+    sources.set(source, (sources.get(source) || 0) + 1);
+  });
+  return [...sources.entries()]
+    .map(([name, value]) => ({ name, value }))
+    .sort((a, b) => b.value - a.value);
+};
+
+export const calculateFunnelData = (leads = []) => {
+  const stages = [
+    { name: "New", statuses: ANALYTICS_STATUSES },
+    { name: "Contacted", statuses: ["Contacted", "Meeting Scheduled", "Proposal Sent", "Won"] },
+    { name: "Meeting", statuses: ["Meeting Scheduled", "Proposal Sent", "Won"] },
+    { name: "Proposal", statuses: ["Proposal Sent", "Won"] },
+    { name: "Won", statuses: ["Won"] },
+  ];
+  return stages.map((stage) => ({
+    name: stage.name,
+    value: leads.filter((lead) => stage.statuses.includes(lead?.status)).length,
+  }));
+};
+
+export const calculateSalesVelocity = (leads = []) => {
+  const active = leads.filter((lead) => !["Won", "Lost"].includes(lead?.status));
+  const winRate = leads.length
+    ? leads.filter((lead) => lead?.status === "Won").length / leads.length
+    : 0;
+  const averageDeal = active.length
+    ? active.reduce((sum, lead) => sum + leadAmount(lead), 0) / active.length
+    : 0;
+  const cycle = calculateAverageSalesCycle(leads);
+  return cycle ? Math.round((active.length * winRate * averageDeal) / cycle) : 0;
+};
+
+export const calculateForecastRevenue = (leads = []) => {
+  const probabilities = {
+    New: 0.1,
+    Contacted: 0.25,
+    "Meeting Scheduled": 0.5,
+    "Proposal Sent": 0.75,
+    Won: 1,
+    Lost: 0,
+  };
+  return Math.round(
+    leads.reduce(
+      (sum, lead) => sum + leadAmount(lead) * (probabilities[lead?.status] ?? 0.1),
+      0,
+    ),
+  );
+};
+
+export const calculateTopPerformers = (leads = []) => {
+  const performers = new Map();
+  leads
+    .filter((lead) => lead?.status === "Won")
+    .forEach((lead) => {
+      const name =
+        lead.owner || lead.salesRep || lead.assignedTo || lead.company || "Unassigned";
+      const current = performers.get(name) || { name, revenue: 0, deals: 0 };
+      current.revenue += leadAmount(lead);
+      current.deals += 1;
+      performers.set(name, current);
+    });
+  return [...performers.values()]
+    .sort((a, b) => b.revenue - a.revenue)
+    .slice(0, 5);
+};
+
+export const calculateHeatmapData = (leads = []) => {
+  const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  const buckets = new Map();
+  leads.forEach((lead) => {
+    const date = validDate(lead?.lastActivityAt || lead?.updatedAt || lead?.createdAt);
+    if (!date) return;
+    const day = date.getDay();
+    const period = Math.floor(date.getHours() / 4);
+    const key = `${day}-${period}`;
+    buckets.set(key, (buckets.get(key) || 0) + 1);
+  });
+  return dayNames.flatMap((day, dayIndex) =>
+    Array.from({ length: 6 }, (_, period) => ({
+      day,
+      dayIndex,
+      period,
+      label: `${String(period * 4).padStart(2, "0")}:00`,
+      value: buckets.get(`${dayIndex}-${period}`) || 0,
+    })),
+  );
 };

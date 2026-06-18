@@ -115,7 +115,7 @@ export default function HelpSupport() {
                     {/* Header trigger panel */}
                     <button
                       onClick={() => toggleFaq(index)}
-                      className="w-full flex items-center justify-between p-4 bg-slate-50/50 dark:bg-gray-750/30 text-left font-bold text-sm text-gray-800 dark:text-gray-250 cursor-pointer focus:outline-none hover:bg-slate-100/50 dark:hover:bg-gray-700/40 transition-colors"
+                      className="w-full flex items-center justify-between p-4 bg-slate-50/50 dark:bg-gray-700/30 text-left font-bold text-sm text-gray-800 dark:text-gray-200 cursor-pointer focus:outline-none hover:bg-slate-100/50 dark:hover:bg-gray-700/60 transition-colors"
                     >
                       <span>{faq.question}</span>
                       {isExpanded ? (
@@ -154,7 +154,7 @@ export default function HelpSupport() {
                 <span className="font-bold text-blue-700 dark:text-blue-400 block mb-1">
                   1. Managing CRM Leads
                 </span>
-                <p className="text-gray-500 dark:text-gray-450 leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
                   Go to Leads page. Use the inline form to add prospective records. Select search query parameters to locate exact lead lists.
                 </p>
               </div>
@@ -164,7 +164,7 @@ export default function HelpSupport() {
                 <span className="font-bold text-violet-700 dark:text-violet-400 block mb-1">
                   2. Analyzing Metrics
                 </span>
-                <p className="text-gray-500 dark:text-gray-450 leading-relaxed">
+                <p className="text-gray-500 dark:text-gray-400 leading-relaxed">
                   Go to Analytics page. Select calendar filters (Today, Weekly, Monthly) to aggregate performance timelines and view key insights.
                 </p>
               </div>
@@ -251,7 +251,7 @@ export default function HelpSupport() {
           </form>
 
           {/* Quick contact detail cards footer */}
-          <div className="mt-5 pt-4 border-t border-gray-150 dark:border-gray-700/80 flex items-center gap-3 text-xs text-gray-400">
+          <div className="mt-5 pt-4 border-t border-gray-200 dark:border-gray-700/80 flex items-center gap-3 text-xs text-gray-400">
             <PhoneCall className="w-4 h-4 text-blue-500 shrink-0" />
             <div>
               <span className="font-bold text-gray-600 dark:text-gray-300 block">

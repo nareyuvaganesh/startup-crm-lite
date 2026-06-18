@@ -3,10 +3,10 @@
  * for consistent, premium aesthetics.
  */
 const STATUS_STYLES = {
-  "New": "bg-gray-100 text-gray-800 border-gray-250/50 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600/50",
+  "New": "bg-gray-100 text-gray-800 border-gray-200 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-600/50",
   "Contacted": "bg-blue-50 text-blue-700 border-blue-100 dark:bg-blue-950/30 dark:text-blue-400 dark:border-blue-900/30",
   "Meeting Scheduled": "bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-950/30 dark:text-amber-400 dark:border-amber-900/30",
-  "Proposal Sent": "bg-purple-50 text-purple-705 border-purple-100 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900/30",
+  "Proposal Sent": "bg-purple-50 text-purple-700 border-purple-100 dark:bg-purple-950/30 dark:text-purple-400 dark:border-purple-900/30",
   "Won": "bg-green-50 text-green-700 border-green-100 dark:bg-green-950/30 dark:text-green-400 dark:border-green-900/30",
   "Lost": "bg-red-50 text-red-700 border-red-100 dark:bg-red-950/30 dark:text-red-400 dark:border-red-900/30",
 };

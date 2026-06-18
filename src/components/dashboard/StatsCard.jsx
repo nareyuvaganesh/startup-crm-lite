@@ -58,17 +58,26 @@ const getColorScheme = (color = "") => {
  * @param {React.ComponentType} [props.icon] - The Lucide React icon component to render
  * @param {number|string} [props.change] - The percentage change vs last month (positive or negative)
  * @param {string} [props.color] - Color theme identifier: 'blue', 'green', 'red', 'yellow' or standard Tailwind classes
+ * @param {string} [props.trendLabel] - Short context label displayed beside the change
  */
-export default function StatsCard({ title, value, icon: Icon = null, change = 0, color = "blue" }) {
+export default function StatsCard({
+  title,
+  value,
+  icon: Icon = null,
+  change = 0,
+  color = "blue",
+  trendLabel = "vs last month",
+}) {
   const scheme = getColorScheme(color);
   
   // Format numeric change and determine sign
   const numericChange = Number(change);
   const isPositive = numericChange >= 0;
   const isZero = isNaN(numericChange) || numericChange === 0;
+  const roundedChange = Math.round(Math.abs(numericChange));
   
   return (
-    <div className={`relative overflow-hidden rounded-xl shadow-md p-5 border border-gray-100 dark:border-gray-700/50 hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-in-out group ${scheme.bg}`}>
+    <div className={`group relative overflow-hidden rounded-xl border border-gray-100 p-4 shadow-md transition-all duration-300 ease-in-out hover:-translate-y-1 hover:shadow-lg dark:border-gray-700/50 sm:p-5 ${scheme.bg}`}>
       {/* Background soft glow animation on hover */}
       <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-gray-50/30 dark:to-gray-800/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
 
@@ -77,14 +86,14 @@ export default function StatsCard({ title, value, icon: Icon = null, change = 0,
           <span className="text-sm font-semibold tracking-wider uppercase text-gray-400 dark:text-gray-500">
             {title}
           </span>
-          <h3 className="text-3xl font-extrabold text-gray-900 dark:text-white tracking-tight">
+          <h3 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
             {value}
           </h3>
         </div>
 
         {Icon && (
-          <div className={`p-3 rounded-lg transition-transform duration-300 group-hover:scale-110 ${scheme.iconContainer}`}>
-            <Icon className="w-6 h-6 stroke-[2]" />
+          <div className={`rounded-lg p-2.5 transition-transform duration-300 group-hover:scale-110 sm:p-3 ${scheme.iconContainer}`}>
+            <Icon className="size-5 stroke-[2] sm:size-6" />
           </div>
         )}
       </div>
@@ -101,11 +110,11 @@ export default function StatsCard({ title, value, icon: Icon = null, change = 0,
             ) : (
               <ArrowDownRight className="w-3.5 h-3.5 stroke-[2.5]" />
             )}
-            {Math.abs(numericChange).toFixed(1)}%
+            {isPositive ? "+" : "-"}{roundedChange}%
           </span>
         )}
         <span className="text-gray-400 dark:text-gray-500 font-medium">
-          vs last month
+          {trendLabel}
         </span>
       </div>
     </div>

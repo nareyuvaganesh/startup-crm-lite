@@ -85,6 +85,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
     const leadPayload = {
       ...formData,
       value: formData.value ? Number(formData.value) : 0,
+      amount: formData.value ? Number(formData.value) : 0,
     };
 
     onSubmit(leadPayload);
@@ -92,7 +93,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {/* Name Input */}
         <div className="space-y-1">
           <label htmlFor="lead-name" className="block text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -105,7 +106,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.name}
             onChange={handleChange}
             placeholder="e.g. Sarah Connor"
-            className={`w-full px-3 py-2 border rounded-xl bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-450 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all ${
+            className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.name ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
@@ -128,7 +129,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.company}
             onChange={handleChange}
             placeholder="e.g. Cyberdyne Systems"
-            className={`w-full px-3 py-2 border rounded-xl bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-450 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all ${
+            className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.company ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
@@ -151,7 +152,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.email}
             onChange={handleChange}
             placeholder="e.g. sarah@cyberdyne.com"
-            className={`w-full px-3 py-2 border rounded-xl bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-450 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all ${
+            className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.email ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
@@ -174,7 +175,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.phone}
             onChange={handleChange}
             placeholder="e.g. +1 555-0199"
-            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-450 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all"
+            className="min-h-11 w-full rounded-xl border border-gray-200 bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-gray-700 dark:text-white dark:focus:ring-blue-400/30"
           />
         </div>
 
@@ -190,7 +191,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.value}
             onChange={handleChange}
             placeholder="e.g. 15000"
-            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-transparent text-sm text-gray-900 dark:text-white placeholder-gray-450 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all"
+            className="min-h-11 w-full rounded-xl border border-gray-200 bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-gray-700 dark:text-white dark:focus:ring-blue-400/30"
           />
         </div>
 
@@ -204,7 +205,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             name="source"
             value={formData.source}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all"
+            className="min-h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400/30"
           >
             {SOURCE_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -224,7 +225,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             name="status"
             value={formData.status}
             onChange={handleChange}
-            className="w-full px-3 py-2 border border-gray-200 dark:border-gray-700 rounded-xl bg-white dark:bg-gray-800 text-sm text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all"
+            className="min-h-11 w-full rounded-xl border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-gray-700 dark:bg-gray-800 dark:text-white dark:focus:ring-blue-400/30"
           >
             {STATUS_OPTIONS.map((opt) => (
               <option key={opt} value={opt}>
@@ -236,18 +237,18 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
       </div>
 
       {/* Footer controls container */}
-      <div className="flex justify-end gap-3 pt-4 border-t border-gray-100 dark:border-gray-700/80">
+      <div className="flex flex-col-reverse gap-3 border-t border-gray-100 pt-4 dark:border-gray-700/80 sm:flex-row sm:justify-end">
         <button
           type="button"
           onClick={onCancel}
-          className="flex items-center gap-1.5 px-4 py-2 border border-gray-200 dark:border-gray-700 rounded-xl text-sm font-bold text-gray-650 dark:text-gray-300 hover:bg-slate-50 dark:hover:bg-gray-700/50 transition-colors cursor-pointer focus:outline-none"
+          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-gray-200 px-4 py-2 text-sm font-bold text-gray-600 transition-colors hover:bg-slate-50 focus:outline-none dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700/50"
         >
           <XCircle size={15} />
           <span>Cancel</span>
         </button>
         <button
           type="submit"
-          className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 transition-all shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500/50 cursor-pointer"
+          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-md transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50"
         >
           {initialData ? (
             <>

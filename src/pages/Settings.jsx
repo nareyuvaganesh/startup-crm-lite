@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { useTheme } from "../context/ThemeContext";
-import { Settings as SettingsIcon, Sun, Moon, Bell, Monitor, Save } from "lucide-react";
+import { Settings as SettingsIcon, Bell, Monitor, Save } from "lucide-react";
 import toast from "react-hot-toast";
+import DarkModeToggle from "../components/common/DarkModeToggle";
 
 /**
  * Settings Page Component
@@ -13,8 +13,6 @@ import toast from "react-hot-toast";
  * @component
  */
 export default function Settings() {
-  const { isDarkMode, toggleTheme } = useTheme();
-
   // Local state for notification settings
   const [notifications, setNotifications] = useState({
     emailAlerts: true,
@@ -79,7 +77,7 @@ export default function Settings() {
 
           <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
             <div>
-              <p className="text-sm font-bold text-gray-800 dark:text-gray-250">
+              <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
                 Application Theme Mode
               </p>
               <p className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
@@ -87,24 +85,9 @@ export default function Settings() {
               </p>
             </div>
 
-            {/* Toggle Theme button */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="flex items-center gap-2.5 px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-slate-50 hover:bg-slate-100 dark:bg-gray-750 dark:hover:bg-gray-700 text-sm font-bold text-gray-700 dark:text-gray-200 cursor-pointer focus:outline-none transition-all duration-200"
-            >
-              {isDarkMode ? (
-                <>
-                  <Sun className="w-4 h-4 text-amber-500 stroke-[2.5]" />
-                  <span>Switch to Light Mode</span>
-                </>
-              ) : (
-                <>
-                  <Moon className="w-4 h-4 text-indigo-500 stroke-[2.5]" />
-                  <span>Switch to Dark Mode</span>
-                </>
-              )}
-            </button>
+            <div className="min-w-44 rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 dark:border-gray-700 dark:bg-gray-700">
+              <DarkModeToggle />
+            </div>
           </div>
         </div>
 
@@ -121,7 +104,7 @@ export default function Settings() {
             {/* Toggle Item 1: Email Alerts */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-250">
+                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
                   Email Alerts
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500">
@@ -132,7 +115,7 @@ export default function Settings() {
                 type="button"
                 onClick={() => handleToggle("emailAlerts")}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.emailAlerts ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-705"
+                  notifications.emailAlerts ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
                 }`}
               >
                 <span
@@ -146,7 +129,7 @@ export default function Settings() {
             {/* Toggle Item 2: Lead Assignments */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-250">
+                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
                   Lead Assignment Notifications
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500">
@@ -157,7 +140,7 @@ export default function Settings() {
                 type="button"
                 onClick={() => handleToggle("leadAssignment")}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.leadAssignment ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-705"
+                  notifications.leadAssignment ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
                 }`}
               >
                 <span
@@ -171,7 +154,7 @@ export default function Settings() {
             {/* Toggle Item 3: Weekly Digest */}
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-250">
+                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
                   Weekly Summary Digest
                 </p>
                 <p className="text-xs text-gray-400 dark:text-gray-500">
@@ -182,7 +165,7 @@ export default function Settings() {
                 type="button"
                 onClick={() => handleToggle("weeklyDigest")}
                 className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.weeklyDigest ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-705"
+                  notifications.weeklyDigest ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
                 }`}
               >
                 <span
@@ -277,7 +260,7 @@ export default function Settings() {
         </div>
 
         {/* Form controls button footer */}
-        <div className="flex justify-end pt-4 border-t border-gray-150 dark:border-gray-700/80">
+        <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700/80">
           <button
             type="submit"
             disabled={isSaving}

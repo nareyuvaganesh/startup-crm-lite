@@ -25,7 +25,7 @@ export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) 
 
   return (
     <div
-      className="flex flex-wrap gap-2"
+      className="flex flex-nowrap gap-2 md:flex-wrap"
       role="group"
       aria-label="Filter leads by status"
     >
@@ -39,11 +39,10 @@ export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) 
             type="button"
             onClick={() => onFilterChange(filter)}
             aria-pressed={isActive}
-            className={`px-3.5 py-1.5 rounded-xl text-sm font-semibold whitespace-nowrap cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500/40 transition-all duration-200 ${
-              isActive
-                ? "bg-blue-600 text-white shadow-md shadow-blue-600/25 scale-[1.02]"
-                : "bg-slate-100 dark:bg-gray-750 text-gray-600 dark:text-gray-300 border border-gray-200/60 dark:border-gray-700 hover:bg-slate-200 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
-            }`}
+            className={`min-h-11 whitespace-nowrap rounded-xl px-3.5 py-2 text-sm font-semibold transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500/40 ${isActive
+              ? "bg-blue-600 text-white shadow-md shadow-blue-600/25 scale-[1.02]"
+              : "bg-slate-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 border border-gray-200/60 dark:border-gray-700 hover:bg-slate-200 dark:hover:bg-gray-600 hover:text-gray-900 dark:hover:text-white"
+              }`}
           >
             {filter} ({count})
           </button>

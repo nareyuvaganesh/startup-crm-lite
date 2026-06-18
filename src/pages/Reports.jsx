@@ -167,10 +167,10 @@ export default function Reports() {
             return (
               <div 
                 key={status} 
-                className="bg-slate-50/50 dark:bg-gray-750/30 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50 transition-transform duration-200 hover:scale-[1.01]"
+                className="bg-slate-50/50 dark:bg-gray-700/30 p-4 rounded-xl border border-gray-100 dark:border-gray-700/50 transition-transform duration-200 hover:scale-[1.01]"
               >
                 <div className="flex justify-between items-baseline mb-2">
-                  <span className="text-sm font-bold text-gray-755 dark:text-gray-300">
+                  <span className="text-sm font-bold text-gray-700 dark:text-gray-300">
                     {status}
                   </span>
                   <div className="flex items-baseline gap-1.5">
@@ -210,11 +210,10 @@ export default function Reports() {
             {statusChartResult.chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={260}>
                 <BarChart data={statusChartResult.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" className="hidden dark:block" />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                  <XAxis dataKey="name" stroke="var(--chart-axis)" fontSize={10} tickLine={false} />
+                  <YAxis stroke="var(--chart-axis)" fontSize={10} tickLine={false} />
+                  <Tooltip cursor={{ fill: "var(--chart-cursor)" }} contentStyle={{ borderRadius: "12px", background: "var(--chart-tooltip-bg)", borderColor: "var(--chart-tooltip-border)", color: "var(--chart-tooltip-text)", boxShadow: "0 4px 12px rgba(0,0,0,0.12)" }} />
                   <Bar dataKey="value" fill="#3b82f6" radius={[4, 4, 0, 0]}>
                     {statusChartResult.chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={STATUS_COLORS[entry.name] || "#3b82f6"} />
@@ -239,11 +238,10 @@ export default function Reports() {
             {growthChartResult.chartData.length > 0 ? (
               <ResponsiveContainer width="100%" height={260}>
                 <LineChart data={growthChartResult.chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
-                  <CartesianGrid strokeDasharray="3 3" stroke="#374151" className="hidden dark:block" />
-                  <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <YAxis stroke="#94a3b8" fontSize={10} tickLine={false} />
-                  <Tooltip contentStyle={{ borderRadius: "12px", border: "none", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" }} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--chart-grid)" />
+                  <XAxis dataKey="name" stroke="var(--chart-axis)" fontSize={10} tickLine={false} />
+                  <YAxis stroke="var(--chart-axis)" fontSize={10} tickLine={false} />
+                  <Tooltip contentStyle={{ borderRadius: "12px", background: "var(--chart-tooltip-bg)", borderColor: "var(--chart-tooltip-border)", color: "var(--chart-tooltip-text)", boxShadow: "0 4px 12px rgba(0,0,0,0.12)" }} />
                   <Legend wrapperStyle={{ fontSize: "10px" }} />
                   <Line type="monotone" dataKey="New Leads" stroke="#3b82f6" strokeWidth={2} activeDot={{ r: 5 }} />
                   <Line type="monotone" dataKey="Total Leads" stroke="#8b5cf6" strokeWidth={2} strokeDasharray="4 4" />

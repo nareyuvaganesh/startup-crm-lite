@@ -19,7 +19,7 @@ const getStatusBadgeStyle = (status = "") => {
   if (s.includes("lost")) {
     return "bg-red-50 text-red-700 dark:bg-red-950/30 dark:text-red-400 border-red-100 dark:border-red-900/30";
   }
-  return "bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-150 dark:border-gray-650";
+  return "bg-gray-50 text-gray-700 dark:bg-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-600";
 };
 
 /**
@@ -59,7 +59,7 @@ export default function RecentLeads({ leads = [] }) {
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 flex flex-col h-full transition-all duration-300">
+    <div className="flex h-full flex-col rounded-xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
       <div className="flex justify-between items-center mb-5">
         <div>
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">
@@ -71,7 +71,7 @@ export default function RecentLeads({ leads = [] }) {
         </div>
       </div>
 
-      <div className="flex-1 overflow-x-auto">
+      <div className="-mx-1 flex-1 overflow-x-auto px-1">
         {recent.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <p className="text-gray-400 dark:text-gray-500 text-sm">
@@ -79,7 +79,7 @@ export default function RecentLeads({ leads = [] }) {
             </p>
           </div>
         ) : (
-          <table className="w-full text-left border-collapse">
+          <table className="min-w-[520px] w-full border-collapse text-left">
             <thead>
               <tr className="border-b border-gray-100 dark:border-gray-700 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
                 <th className="pb-3 pl-2">Lead / Company</th>
@@ -87,7 +87,7 @@ export default function RecentLeads({ leads = [] }) {
                 <th className="pb-3 pr-2 text-right">Date Added</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-50 dark:divide-gray-750">
+          <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {recent.map((lead) => (
                 <tr 
                   key={lead.id || lead.email}

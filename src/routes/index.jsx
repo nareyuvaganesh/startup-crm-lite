@@ -1,7 +1,7 @@
 // Import lazy loading function and Suspense fallback wrapper component.
 import { lazy, Suspense } from "react";
 // Import Routes and Route components from react-router-dom to define application paths.
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 
 // Use React.lazy to dynamic-import the Dashboard page component, splitting it into its own bundle.
 const Dashboard = lazy(() => import("../pages/Dashboard"));
@@ -43,11 +43,13 @@ function PageLoader() {
  * Configures the router paths and ties each route to its corresponding page component.
  */
 export default function AppRoutes() {
+  const location = useLocation();
+
   return (
     // Wrap the Routes list in Suspense, rendering PageLoader while components are resolving.
     <Suspense fallback={<PageLoader />}>
       {/* Container for grouping all the individual Route paths */}
-      <Routes>
+      <Routes key={`${location.pathname}${location.search}`}>
         {/* Defines the Dashboard page route mapped to the root "/" path */}
         <Route path="/" element={<Dashboard />} />
         {/* Defines the Leads page route mapped to the "/leads" path */}
