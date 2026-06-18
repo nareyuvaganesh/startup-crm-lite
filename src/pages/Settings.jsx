@@ -54,10 +54,10 @@ export default function Settings() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="mx-auto w-full max-w-4xl space-y-5 lg:space-y-6">
       {/* Title */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Settings
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -65,9 +65,9 @@ export default function Settings() {
         </p>
       </div>
 
-      <form onSubmit={handleSaveSettings} className="space-y-6">
+      <form onSubmit={handleSaveSettings} className="space-y-5 lg:space-y-6 [&_input]:min-h-11 [&_select]:min-h-11">
         {/* PANEL 1: Theme Preferences */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
           <div className="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <Monitor className="text-blue-600 dark:text-blue-400 w-5 h-5" />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -92,7 +92,7 @@ export default function Settings() {
         </div>
 
         {/* PANEL 2: Notifications Alerts */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
           <div className="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <Bell className="text-blue-600 dark:text-blue-400 w-5 h-5" />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -114,15 +114,18 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={() => handleToggle("emailAlerts")}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.emailAlerts ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}
+                aria-pressed={notifications.emailAlerts}
+                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                    notifications.emailAlerts ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
+                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
+                  notifications.emailAlerts ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
+                }`}>
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                      notifications.emailAlerts ? "translate-x-5" : "translate-x-0.5"
+                    }`}
+                  />
+                </span>
               </button>
             </div>
 
@@ -139,15 +142,18 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={() => handleToggle("leadAssignment")}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.leadAssignment ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}
+                aria-pressed={notifications.leadAssignment}
+                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                    notifications.leadAssignment ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
+                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
+                  notifications.leadAssignment ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
+                }`}>
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                      notifications.leadAssignment ? "translate-x-5" : "translate-x-0.5"
+                    }`}
+                  />
+                </span>
               </button>
             </div>
 
@@ -164,22 +170,25 @@ export default function Settings() {
               <button
                 type="button"
                 onClick={() => handleToggle("weeklyDigest")}
-                className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-                  notifications.weeklyDigest ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}
+                aria-pressed={notifications.weeklyDigest}
+                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
               >
-                <span
-                  className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
-                    notifications.weeklyDigest ? "translate-x-5" : "translate-x-0"
-                  }`}
-                />
+                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
+                  notifications.weeklyDigest ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
+                }`}>
+                  <span
+                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
+                      notifications.weeklyDigest ? "translate-x-5" : "translate-x-0.5"
+                    }`}
+                  />
+                </span>
               </button>
             </div>
           </div>
         </div>
 
         {/* PANEL 3: System Defaults */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+        <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
           <div className="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <SettingsIcon className="text-blue-600 dark:text-blue-400 w-5 h-5" />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -187,7 +196,7 @@ export default function Settings() {
             </h2>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
             {/* Default Owner */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -260,11 +269,11 @@ export default function Settings() {
         </div>
 
         {/* Form controls button footer */}
-        <div className="flex justify-end pt-4 border-t border-gray-200 dark:border-gray-700/80">
+        <div className="flex border-t border-gray-200 pt-4 dark:border-gray-700/80 sm:justify-end">
           <button
             type="submit"
             disabled={isSaving}
-            className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 cursor-pointer focus:outline-none disabled:opacity-75 focus:ring-2 focus:ring-blue-500/50 shadow-md hover:shadow-lg transition-all"
+            className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white shadow-md transition-all hover:bg-blue-700 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-75 sm:w-auto"
           >
             {isSaving ? (
               <>

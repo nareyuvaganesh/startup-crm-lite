@@ -173,7 +173,7 @@ export default function Navbar() {
         <DarkModeToggle compact />
 
         {activePanel === "search" && (
-          <div className="absolute right-20 top-11 w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-gray-900/10 dark:border-gray-700 dark:bg-gray-800">
+          <div className="absolute right-0 top-12 w-80 max-w-[calc(100vw-16rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-gray-900/10 dark:border-gray-700 dark:bg-gray-800 lg:max-w-[calc(100vw-20rem)]">
             <div className="flex items-center gap-2 border-b border-gray-100 p-3 dark:border-gray-700">
               <Search className="size-4 text-gray-400" />
               <input
@@ -240,7 +240,7 @@ export default function Navbar() {
         )}
 
         {activePanel === "notifications" && (
-          <div className="absolute right-12 top-11 w-80 overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-gray-900/10 dark:border-gray-700 dark:bg-gray-800">
+          <div className="absolute right-0 top-12 w-80 max-w-[calc(100vw-16rem)] overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-gray-900/10 dark:border-gray-700 dark:bg-gray-800 lg:max-w-[calc(100vw-20rem)]">
             <div className="border-b border-gray-100 px-4 py-3 dark:border-gray-700">
               <h3 className="text-sm font-bold text-gray-900 dark:text-white">
                 Notifications

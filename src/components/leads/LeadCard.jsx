@@ -23,23 +23,23 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
     <div className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-5 hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 ease-in-out group flex flex-col justify-between min-h-[220px]">
       <div>
         {/* Header row with Name and Status Badge */}
-        <div className="flex justify-between items-start gap-2 mb-3">
-          <div className="space-y-0.5">
-            <h3 className="text-lg font-bold text-gray-900 dark:text-white tracking-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors duration-150">
+        <div className="mb-3 flex min-w-0 items-start justify-between gap-2">
+          <div className="min-w-0 space-y-0.5">
+            <h3 className="truncate text-lg font-bold tracking-tight text-gray-900 transition-colors duration-150 group-hover:text-blue-600 dark:text-white dark:group-hover:text-blue-400" title={lead.name}>
               {lead.name}
             </h3>
-            <div className="flex items-center gap-1.5 text-xs text-gray-400 dark:text-gray-500 font-semibold uppercase tracking-wider">
+            <div className="flex min-w-0 items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
               <Building2 className="w-3.5 h-3.5 stroke-[2]" />
-              <span>{lead.company}</span>
+              <span className="truncate" title={lead.company}>{lead.company}</span>
             </div>
           </div>
-          <StatusBadge status={lead.status} />
+          <span className="shrink-0"><StatusBadge status={lead.status} /></span>
         </div>
 
         {/* Detailed parameters */}
         <div className="space-y-2 text-sm mt-4">
           {lead.email && (
-            <div className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300">
+            <div className="flex min-w-0 items-center gap-2.5 text-gray-600 dark:text-gray-300">
               <Mail className="w-4 h-4 text-gray-400 shrink-0" />
               <a 
                 href={`mailto:${lead.email}`} 
@@ -50,11 +50,11 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
             </div>
           )}
           {lead.phone && (
-            <div className="flex items-center gap-2.5 text-gray-600 dark:text-gray-300">
+            <div className="flex min-w-0 items-center gap-2.5 text-gray-600 dark:text-gray-300">
               <Phone className="w-4 h-4 text-gray-400 shrink-0" />
               <a 
                 href={`tel:${lead.phone}`} 
-                className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors focus:outline-none"
+                className="min-w-0 truncate transition-colors hover:text-blue-600 focus:outline-none dark:hover:text-blue-400"
               >
                 {lead.phone}
               </a>

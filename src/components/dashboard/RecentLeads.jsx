@@ -71,7 +71,7 @@ export default function RecentLeads({ leads = [] }) {
         </div>
       </div>
 
-      <div className="-mx-1 flex-1 overflow-x-auto px-1">
+      <div className="flex-1">
         {recent.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-10 text-center">
             <p className="text-gray-400 dark:text-gray-500 text-sm">
@@ -79,6 +79,33 @@ export default function RecentLeads({ leads = [] }) {
             </p>
           </div>
         ) : (
+          <>
+            <div className="space-y-2 sm:hidden">
+              {recent.map((lead) => (
+                <div
+                  key={lead.id || lead.email}
+                  className="flex min-w-0 items-center justify-between gap-3 rounded-xl border border-gray-100 p-3 dark:border-gray-700"
+                >
+                  <div className="min-w-0">
+                    <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
+                      {lead.name}
+                    </p>
+                    <p className="truncate text-xs text-gray-500 dark:text-gray-400">
+                      {lead.company}
+                    </p>
+                  </div>
+                  <div className="shrink-0 text-right">
+                    <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold ${getStatusBadgeStyle(lead.status)}`}>
+                      {lead.status}
+                    </span>
+                    <p className="mt-1 text-[10px] text-gray-400">
+                      {formatDate(lead.createdAt)}
+                    </p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="hidden overflow-x-auto sm:block">
           <table className="min-w-[520px] w-full border-collapse text-left">
             <thead>
               <tr className="border-b border-gray-100 dark:border-gray-700 text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">
@@ -113,6 +140,8 @@ export default function RecentLeads({ leads = [] }) {
               ))}
             </tbody>
           </table>
+            </div>
+          </>
         )}
       </div>
     </div>

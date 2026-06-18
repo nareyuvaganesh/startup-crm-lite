@@ -74,10 +74,10 @@ export default function Reports() {
   const growthChartResult = getLeadGrowthData(currentLeads, days);
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="mx-auto w-full max-w-7xl space-y-5 lg:space-y-6">
       {/* Header section */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Lead Reports
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -86,16 +86,16 @@ export default function Reports() {
       </div>
 
       {/* KPI Cards section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5">
         {/* Total Leads Card */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 hover:shadow-lg transition-shadow duration-200">
+        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
           <div className="flex justify-between items-start mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
               Total Leads
             </span>
             <Activity className="w-5 h-5 text-blue-500" />
           </div>
-          <p className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
             {totalLeads}
           </p>
           <span className="text-xs text-gray-400 font-medium">
@@ -104,14 +104,14 @@ export default function Reports() {
         </div>
 
         {/* Total Won Revenue Card */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 hover:shadow-lg transition-shadow duration-200">
+        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
           <div className="flex justify-between items-start mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
               Won Revenue
             </span>
             <DollarSign className="w-5 h-5 text-green-500" />
           </div>
-          <p className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
             ${totalRevenue.toLocaleString()}
           </p>
           <span className="text-xs text-gray-400 font-medium">
@@ -120,14 +120,14 @@ export default function Reports() {
         </div>
 
         {/* Average Deal Value Card */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 hover:shadow-lg transition-shadow duration-200">
+        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
           <div className="flex justify-between items-start mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
               Avg Deal Value
             </span>
             <TrendingUp className="w-5 h-5 text-violet-500" />
           </div>
-          <p className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
             ${averageValue.toLocaleString()}
           </p>
           <span className="text-xs text-gray-400 font-medium">
@@ -136,14 +136,14 @@ export default function Reports() {
         </div>
 
         {/* Win / Conversion Rate Card */}
-        <div className="bg-white dark:bg-gray-800 p-5 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 hover:shadow-lg transition-shadow duration-200">
+        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
           <div className="flex justify-between items-start mb-2">
             <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
               Conversion %
             </span>
             <Award className="w-5 h-5 text-amber-500" />
           </div>
-          <p className="text-2xl font-extrabold text-gray-900 dark:text-white">
+          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
             {conversionRate}%
           </p>
           <span className="text-xs text-gray-400 font-medium">
@@ -153,13 +153,13 @@ export default function Reports() {
       </div>
 
       {/* Lead Status Breakdown Section */}
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6">
+      <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
         <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
           <FileText size={18} className="text-blue-500" />
           <span>Stage-by-Stage Lead Counts</span>
         </h2>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 lg:gap-6">
           {Object.entries(statusCounts).map(([status, count]) => {
             const percentage = totalLeads > 0 ? (count / totalLeads) * 100 : 0;
             const barColor = STATUS_COLORS[status] || "#6b7280";
@@ -200,9 +200,9 @@ export default function Reports() {
       </div>
 
       {/* Analytical Visualizations section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid min-w-0 grid-cols-1 gap-5 lg:grid-cols-2 lg:gap-6">
         {/* Status Distribution Bar Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-5 flex flex-col min-h-[360px]">
+        <div className="flex min-h-[320px] min-w-0 flex-col rounded-2xl border border-gray-100 bg-white p-4 shadow-md dark:border-gray-700/50 dark:bg-gray-800 sm:min-h-[360px] sm:p-5">
           <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4">
             Lead Distribution by Stage (Current Period)
           </h3>
@@ -230,7 +230,7 @@ export default function Reports() {
         </div>
 
         {/* Lead growth over time Line Chart */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-5 flex flex-col min-h-[360px]">
+        <div className="flex min-h-[320px] min-w-0 flex-col rounded-2xl border border-gray-100 bg-white p-4 shadow-md dark:border-gray-700/50 dark:bg-gray-800 sm:min-h-[360px] sm:p-5">
           <h3 className="text-base font-bold text-gray-900 dark:text-white mb-4">
             Lead Growth Trend
           </h3>

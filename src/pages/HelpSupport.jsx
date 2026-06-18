@@ -83,10 +83,10 @@ export default function HelpSupport() {
   };
 
   return (
-    <div className="space-y-6 max-w-6xl mx-auto">
+    <div className="mx-auto w-full max-w-6xl space-y-5 lg:space-y-6">
       {/* Title */}
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 dark:text-white">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
           Help & Support
         </h1>
         <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
@@ -94,11 +94,11 @@ export default function HelpSupport() {
         </p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+      <div className="grid min-w-0 grid-cols-1 items-start gap-5 lg:grid-cols-3 lg:gap-6">
         {/* Left Columns: FAQs and Guides */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="min-w-0 space-y-5 lg:col-span-2 lg:space-y-6">
           {/* FAQ Accordion Section */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+          <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
               <HelpCircle className="w-5 h-5 text-blue-500" />
               <span>Frequently Asked Questions</span>
@@ -115,9 +115,10 @@ export default function HelpSupport() {
                     {/* Header trigger panel */}
                     <button
                       onClick={() => toggleFaq(index)}
-                      className="w-full flex items-center justify-between p-4 bg-slate-50/50 dark:bg-gray-700/30 text-left font-bold text-sm text-gray-800 dark:text-gray-200 cursor-pointer focus:outline-none hover:bg-slate-100/50 dark:hover:bg-gray-700/60 transition-colors"
+                      aria-expanded={isExpanded}
+                      className="flex min-h-11 w-full items-center justify-between gap-3 bg-slate-50/50 p-4 text-left text-sm font-bold text-gray-800 transition-colors hover:bg-slate-100/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700/30 dark:text-gray-200 dark:hover:bg-gray-700/60"
                     >
-                      <span>{faq.question}</span>
+                      <span className="min-w-0 break-words">{faq.question}</span>
                       {isExpanded ? (
                         <ChevronUp size={16} className="text-gray-400" />
                       ) : (
@@ -142,7 +143,7 @@ export default function HelpSupport() {
           </div>
 
           {/* Quick Guides Grid */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+          <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
             <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-5 flex items-center gap-2">
               <BookOpen className="w-5 h-5 text-blue-500" />
               <span>Quick Start Guides</span>
@@ -173,7 +174,7 @@ export default function HelpSupport() {
         </div>
 
         {/* Right Column: Contact Support Form */}
-        <div className="lg:col-span-1 bg-white dark:bg-gray-800 rounded-2xl shadow-md border border-gray-100 dark:border-gray-700/50 p-6 transition-all duration-300">
+        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6 lg:col-span-1">
           <div className="flex items-center gap-2 mb-5 pb-3 border-b border-gray-100 dark:border-gray-700/80">
             <Mail className="text-blue-600 dark:text-blue-400 w-5 h-5" />
             <h2 className="text-lg font-bold text-gray-900 dark:text-white">
@@ -181,7 +182,7 @@ export default function HelpSupport() {
             </h2>
           </div>
 
-          <form onSubmit={handleFormSubmit} className="space-y-4">
+          <form onSubmit={handleFormSubmit} className="space-y-4 [&_input]:min-h-11 [&_select]:min-h-11">
             {/* Category selection */}
             <div className="space-y-1.5">
               <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">

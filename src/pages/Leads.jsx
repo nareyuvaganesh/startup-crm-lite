@@ -181,7 +181,7 @@ export default function Leads() {
       </div>
 
       {/* Status Filter Tab row */}
-      <div className="w-full overflow-x-auto pb-1">
+      <div className="w-full">
         <FilterBar
           activeFilter={activeFilter}
           onFilterChange={setActiveFilter}

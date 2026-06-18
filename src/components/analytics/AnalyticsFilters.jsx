@@ -4,7 +4,7 @@ import { DATE_FILTERS } from "../../constants/analyticsColors";
 
 function AnalyticsFilters({ value, onChange }) {
   return (
-    <div className="flex w-full items-center gap-1.5 overflow-x-auto rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:w-auto">
+    <div className="flex w-full flex-wrap items-center gap-1.5 rounded-xl border border-slate-200 bg-white p-1.5 shadow-sm dark:border-gray-700 dark:bg-gray-800 sm:w-auto">
       <CalendarDays className="ml-2 size-4 shrink-0 text-slate-400" />
       {DATE_FILTERS.map((filter) => (
         <button

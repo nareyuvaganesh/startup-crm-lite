@@ -25,7 +25,7 @@ export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) 
 
   return (
     <div
-      className="flex flex-nowrap gap-2 md:flex-wrap"
+      className="flex flex-wrap gap-2"
       role="group"
       aria-label="Filter leads by status"
     >

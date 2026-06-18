@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import {
   BarChart3,
@@ -6,7 +5,6 @@ import {
   FileText,
   HelpCircle,
   LayoutDashboard,
-  Menu,
   Rocket,
   Settings,
   UserRound,
@@ -37,6 +35,34 @@ const primaryLinks = [
   },
 ];
 
+const mobileLinks = [
+  {
+    to: "/",
+    label: "Dashboard",
+    icon: LayoutDashboard,
+  },
+  {
+    to: "/leads",
+    label: "Leads",
+    icon: Users,
+  },
+  {
+    to: "/profile",
+    label: "Profile",
+    icon: UserRound,
+  },
+  {
+    to: "/analytics",
+    label: "Analytics",
+    icon: BarChart3,
+  },
+  {
+    to: "/settings",
+    label: "Settings",
+    icon: Settings,
+  },
+];
+
 const secondaryLinks = [
   {
     to: "/reports",
@@ -63,8 +89,10 @@ const secondaryLinks = [
  * Mobile uses an icon-only bottom bar and More drawer; tablet and desktop use
  * a fixed-width left sidebar, with sub-labels revealed on large screens.
  */
-export default function Sidebar() {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+export default function Sidebar({
+  isMobileMenuOpen,
+  onMobileMenuClose,
+}) {
   const { profile } = useProfile();
   const fullName = [profile.firstName, profile.lastName].filter(Boolean).join(" ");
   const initials = [profile.firstName, profile.lastName]
@@ -165,7 +193,7 @@ export default function Sidebar() {
           <button
             type="button"
             aria-label="Close navigation menu"
-            onClick={() => setIsMobileMenuOpen(false)}
+            onClick={onMobileMenuClose}
             className="absolute inset-0 bg-black/50"
           />
           <section className="absolute inset-x-0 bottom-0 rounded-t-3xl border-t border-gray-200 bg-white p-4 pb-24 shadow-2xl dark:border-gray-700 dark:bg-gray-800">
@@ -178,7 +206,7 @@ export default function Sidebar() {
               </div>
               <button
                 type="button"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={onMobileMenuClose}
                 aria-label="Close navigation"
                 className="grid size-11 place-items-center rounded-xl text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700"
               >
@@ -191,7 +219,7 @@ export default function Sidebar() {
                 <NavLink
                   key={to}
                   to={to}
-                  onClick={() => setIsMobileMenuOpen(false)}
+                  onClick={onMobileMenuClose}
                   className="flex min-h-14 items-center gap-3 rounded-xl border border-gray-200 px-3 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-200"
                 >
                   <Icon className="size-5 text-blue-500" />
@@ -200,7 +228,7 @@ export default function Sidebar() {
               ))}
               <NavLink
                 to="/profile"
-                onClick={() => setIsMobileMenuOpen(false)}
+                onClick={onMobileMenuClose}
                 className="flex min-h-14 items-center gap-3 rounded-xl border border-gray-200 px-3 text-sm font-semibold text-gray-700 dark:border-gray-700 dark:text-gray-200"
               >
                 <UserRound className="size-5 text-blue-500" />
@@ -216,7 +244,7 @@ export default function Sidebar() {
       )}
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex min-h-16 items-center border-t border-gray-200 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-gray-700 dark:bg-gray-900/95 md:hidden">
-        {primaryLinks.map(({ to, label, icon: Icon }) => (
+        {mobileLinks.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}
@@ -228,24 +256,6 @@ export default function Sidebar() {
             <span className="sr-only">{label}</span>
           </NavLink>
         ))}
-        <NavLink
-          to="/profile"
-          aria-label="Profile"
-          title="Profile"
-          className={mobileLinkClass}
-        >
-          <UserRound className="size-5" />
-          <span className="sr-only">Profile</span>
-        </NavLink>
-        <button
-          type="button"
-          onClick={() => setIsMobileMenuOpen(true)}
-          aria-label="Open more navigation"
-          title="More"
-          className="flex min-h-14 min-w-14 flex-1 items-center justify-center rounded-xl text-gray-500 dark:text-gray-400"
-        >
-          <Menu className="size-5" />
-        </button>
       </nav>
     </>
   );
