@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StatusBadge from "./StatusBadge";
 import { Pencil, Trash2, Mail, Phone, Building2 } from "lucide-react";
 
@@ -16,7 +17,7 @@ import { Pencil, Trash2, Mail, Phone, Building2 } from "lucide-react";
  * @param {function} props.onEdit - Callback function invoked on clicking Edit
  * @param {function} props.onDelete - Callback function invoked on clicking Delete
  */
-export default function LeadCard({ lead, onEdit, onDelete }) {
+function LeadCard({ lead, onEdit, onDelete }) {
   if (!lead) return null;
 
   return (
@@ -86,3 +87,5 @@ export default function LeadCard({ lead, onEdit, onDelete }) {
     </div>
   );
 }
+
+export default memo(LeadCard);

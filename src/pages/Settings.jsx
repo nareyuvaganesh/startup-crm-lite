@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Settings as SettingsIcon, Bell, Monitor, Save } from "lucide-react";
 import toast from "react-hot-toast";
 import DarkModeToggle from "../components/common/DarkModeToggle";
+import SettingToggle from "../components/settings/SettingToggle";
 
 /**
  * Settings Page Component
@@ -32,9 +33,9 @@ export default function Settings() {
   const [isSaving, setIsSaving] = useState(false);
 
   // Toggle switch handler for checkboxes
-  const handleToggle = (key) => {
+  const handleToggle = useCallback((key) => {
     setNotifications((prev) => ({ ...prev, [key]: !prev[key] }));
-  };
+  }, []);
 
   // Change handler for default fields
   const handleInputChange = (e) => {
@@ -101,89 +102,9 @@ export default function Settings() {
           </div>
 
           <div className="space-y-4">
-            {/* Toggle Item 1: Email Alerts */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                  Email Alerts
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  Receive email copy updates on critical CRM notifications.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleToggle("emailAlerts")}
-                aria-pressed={notifications.emailAlerts}
-                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
-                  notifications.emailAlerts ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}>
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
-                      notifications.emailAlerts ? "translate-x-5" : "translate-x-0.5"
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
-
-            {/* Toggle Item 2: Lead Assignments */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                  Lead Assignment Notifications
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  Notify me immediately when a new lead is assigned to my profile.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleToggle("leadAssignment")}
-                aria-pressed={notifications.leadAssignment}
-                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
-                  notifications.leadAssignment ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}>
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
-                      notifications.leadAssignment ? "translate-x-5" : "translate-x-0.5"
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
-
-            {/* Toggle Item 3: Weekly Digest */}
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                  Weekly Summary Digest
-                </p>
-                <p className="text-xs text-gray-400 dark:text-gray-500">
-                  Send a weekly performance report summary via email.
-                </p>
-              </div>
-              <button
-                type="button"
-                onClick={() => handleToggle("weeklyDigest")}
-                aria-pressed={notifications.weeklyDigest}
-                className="inline-flex min-h-11 min-w-14 shrink-0 items-center justify-center rounded-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
-              >
-                <span className={`relative inline-flex h-6 w-11 rounded-full transition-colors duration-200 ${
-                  notifications.weeklyDigest ? "bg-blue-600" : "bg-gray-200 dark:bg-gray-700"
-                }`}>
-                  <span
-                    className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm transition duration-200 ease-in-out ${
-                      notifications.weeklyDigest ? "translate-x-5" : "translate-x-0.5"
-                    }`}
-                  />
-                </span>
-              </button>
-            </div>
+            <SettingToggle name="emailAlerts" label="Email Alerts" description="Receive email copy updates on critical CRM notifications." value={notifications.emailAlerts} onToggle={handleToggle} />
+            <SettingToggle name="leadAssignment" label="Lead Assignment Notifications" description="Notify me immediately when a new lead is assigned to my profile." value={notifications.leadAssignment} onToggle={handleToggle} />
+            <SettingToggle name="weeklyDigest" label="Weekly Summary Digest" description="Send a weekly performance report summary via email." value={notifications.weeklyDigest} onToggle={handleToggle} />
           </div>
         </div>
 
@@ -199,10 +120,11 @@ export default function Settings() {
           <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
             {/* Default Owner */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="default-owner" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Default Lead Owner
               </label>
               <input
+                id="default-owner"
                 type="text"
                 name="defaultOwner"
                 value={defaults.defaultOwner}
@@ -213,10 +135,11 @@ export default function Settings() {
 
             {/* Default Currency */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="default-currency" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Default Currency
               </label>
               <select
+                id="default-currency"
                 name="defaultCurrency"
                 value={defaults.defaultCurrency}
                 onChange={handleInputChange}
@@ -231,10 +154,11 @@ export default function Settings() {
 
             {/* Default Lead Source */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="default-source" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Default Lead Source
               </label>
               <select
+                id="default-source"
                 name="defaultSource"
                 value={defaults.defaultSource}
                 onChange={handleInputChange}
@@ -250,10 +174,11 @@ export default function Settings() {
 
             {/* Records per page */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="records-per-page" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Records per Page (Tables)
               </label>
               <select
+                id="records-per-page"
                 name="recordsPerPage"
                 value={defaults.recordsPerPage}
                 onChange={handleInputChange}

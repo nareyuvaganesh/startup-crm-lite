@@ -1,3 +1,4 @@
+import { memo } from "react";
 import StatusBadge from "./StatusBadge";
 import { Pencil, Trash2 } from "lucide-react";
 
@@ -17,7 +18,7 @@ import { Pencil, Trash2 } from "lucide-react";
  * @param {function} props.onEdit - Callback invoked on Edit button click
  * @param {function} props.onDelete - Callback invoked on Delete button click
  */
-export default function LeadTable({ leads = [], onEdit, onDelete }) {
+function LeadTable({ leads = [], onEdit, onDelete }) {
   /**
    * Formats ISO timestamps into human-readable shorthand dates.
    * 
@@ -123,3 +124,5 @@ export default function LeadTable({ leads = [], onEdit, onDelete }) {
     </div>
   );
 }
+
+export default memo(LeadTable);

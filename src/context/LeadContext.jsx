@@ -1,5 +1,5 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import sampleLeads from "../data/sampleLeads";
 
@@ -42,7 +42,7 @@ export function LeadProvider({ children }) {
    *
    * @param {Omit<Lead, 'id' | 'createdAt'>} lead - Lead information to add (without id and createdAt)
    */
-  const addLead = (lead) => {
+  const addLead = useCallback((lead) => {
     const newLead = {
       ...lead,
       id: crypto.randomUUID(),
@@ -50,7 +50,7 @@ export function LeadProvider({ children }) {
     };
 
     setLeads((currentLeads) => [...currentLeads, newLead]);
-  };
+  }, [setLeads]);
 
   /**
    * Updates fields of an existing lead record by matching its unique ID.
@@ -58,7 +58,7 @@ export function LeadProvider({ children }) {
    * @param {string} id - The ID of the lead to update
    * @param {Partial<Lead>} updatedLead - The partial lead fields to update
    */
-  const updateLead = (id, updatedLead) => {
+  const updateLead = useCallback((id, updatedLead) => {
     setLeads((currentLeads) =>
       currentLeads.map((lead) =>
         lead.id === id
@@ -66,18 +66,18 @@ export function LeadProvider({ children }) {
           : lead
       )
     );
-  };
+  }, [setLeads]);
 
   /**
    * Deletes a lead record matching the specified ID from the state.
    *
    * @param {string} id - The ID of the lead to delete
    */
-  const deleteLead = (id) => {
+  const deleteLead = useCallback((id) => {
     setLeads((currentLeads) =>
       currentLeads.filter((lead) => lead.id !== id)
     );
-  };
+  }, [setLeads]);
 
   /**
    * Retrieves a single lead object from the current state matching the specified ID.
@@ -85,20 +85,18 @@ export function LeadProvider({ children }) {
    * @param {string} id - The ID of the lead to retrieve
    * @returns {Lead | undefined} The matching lead object, or undefined if not found
    */
-  const getLeadById = (id) => {
-    return leads.find((lead) => lead.id === id);
-  };
+  const getLeadById = useCallback(
+    (id) => leads.find((lead) => lead.id === id),
+    [leads],
+  );
+
+  const contextValue = useMemo(
+    () => ({ leads, addLead, updateLead, deleteLead, getLeadById }),
+    [leads, addLead, updateLead, deleteLead, getLeadById],
+  );
 
   return (
-    <LeadContext.Provider
-      value={{
-        leads,
-        addLead,
-        updateLead,
-        deleteLead,
-        getLeadById,
-      }}
-    >
+    <LeadContext.Provider value={contextValue}>
       {children}
     </LeadContext.Provider>
   );

@@ -1,8 +1,8 @@
 /* eslint-disable react-refresh/only-export-components */
-import { createContext, useContext } from "react";
+import { createContext, useCallback, useContext, useMemo } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-const emptyProfile = {
+const EMPTY_PROFILE = {
   firstName: "",
   lastName: "",
   email: "",
@@ -20,7 +20,7 @@ const normalizeProfile = (value) => {
   const savedProfile = value && typeof value === "object" ? value : {};
 
   return Object.fromEntries(
-    Object.keys(emptyProfile).map((key) => [
+    Object.keys(EMPTY_PROFILE).map((key) => [
       key,
       typeof savedProfile[key] === "string" ? savedProfile[key] : "",
     ]),
@@ -30,11 +30,11 @@ const normalizeProfile = (value) => {
 export function ProfileProvider({ children }) {
   const [storedProfile, setStoredProfile] = useLocalStorage(
     "startup-crm-profile",
-    emptyProfile,
+    EMPTY_PROFILE,
   );
-  const profile = normalizeProfile(storedProfile);
+  const profile = useMemo(() => normalizeProfile(storedProfile), [storedProfile]);
 
-  const setProfile = (value) => {
+  const setProfile = useCallback((value) => {
     setStoredProfile((currentProfile) => {
       const current = normalizeProfile(currentProfile);
       const nextProfile =
@@ -42,10 +42,15 @@ export function ProfileProvider({ children }) {
 
       return normalizeProfile(nextProfile);
     });
-  };
+  }, [setStoredProfile]);
+
+  const contextValue = useMemo(
+    () => ({ profile, setProfile }),
+    [profile, setProfile],
+  );
 
   return (
-    <ProfileContext.Provider value={{ profile, setProfile }}>
+    <ProfileContext.Provider value={contextValue}>
       {children}
     </ProfileContext.Provider>
   );

@@ -1,8 +1,10 @@
 /* eslint-disable react-refresh/only-export-components */
 import {
+  useCallback,
   createContext,
   useContext,
   useEffect,
+  useMemo,
 } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
@@ -25,9 +27,9 @@ export function ThemeProvider({ children }) {
   /**
    * Toggles the theme between light and dark modes.
    */
-  const toggleTheme = () => {
+  const toggleTheme = useCallback(() => {
     setIsDarkMode((currentMode) => !currentMode);
-  };
+  }, [setIsDarkMode]);
 
   // Keep the document theme synchronized with the persisted React state.
   useEffect(() => {
@@ -35,10 +37,13 @@ export function ThemeProvider({ children }) {
     document.documentElement.style.colorScheme = isDarkMode ? "dark" : "light";
   }, [isDarkMode]);
 
+  const contextValue = useMemo(
+    () => ({ isDarkMode, toggleTheme }),
+    [isDarkMode, toggleTheme],
+  );
+
   return (
-    <ThemeContext.Provider
-      value={{ isDarkMode, toggleTheme }}
-    >
+    <ThemeContext.Provider value={contextValue}>
       {children}
     </ThemeContext.Provider>
   );

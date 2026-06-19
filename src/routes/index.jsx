@@ -27,7 +27,11 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 function PageLoader() {
   return (
     // A flexbox container that centers the loading spinner both vertically and horizontally.
-    <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+    <div
+      className="flex flex-col items-center justify-center min-h-[60vh] gap-4"
+      role="status"
+      aria-live="polite"
+    >
       {/* A CSS-animated spinner circle with blue top border and transparent side borders */}
       <div className="w-12 h-12 border-4 border-blue-500/30 border-t-blue-600 rounded-full animate-spin"></div>
       {/* Text with an opacity-pulsing animation to let users know the page is loading */}

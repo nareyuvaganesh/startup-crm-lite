@@ -13,7 +13,7 @@ import toast from "react-hot-toast";
  */
 export default function HelpSupport() {
   // FAQ questions list dataset
-  const faqs = [
+  const FAQS = [
     {
       question: "How do I export my lead database?",
       answer: "Navigate to the Dashboard page. Under the 'Quick Actions' panel, click the 'Export Data (CSV)' button. The system will compile all leads into a sanitized CSV file and trigger a local file download.",
@@ -36,8 +36,8 @@ export default function HelpSupport() {
   const [expandedIndex, setExpandedIndex] = useState(null);
 
   // Toggle FAQ item visibility
-  const toggleFaq = (index) => {
-    setExpandedIndex(expandedIndex === index ? null : index);
+  const handleFaqToggle = (index) => {
+    setExpandedIndex((current) => (current === index ? null : index));
   };
 
   // State hooks for contact form
@@ -105,7 +105,7 @@ export default function HelpSupport() {
             </h2>
 
             <div className="space-y-3">
-              {faqs.map((faq, index) => {
+              {FAQS.map((faq, index) => {
                 const isExpanded = expandedIndex === index;
                 return (
                   <div
@@ -114,8 +114,9 @@ export default function HelpSupport() {
                   >
                     {/* Header trigger panel */}
                     <button
-                      onClick={() => toggleFaq(index)}
+                      onClick={() => handleFaqToggle(index)}
                       aria-expanded={isExpanded}
+                      aria-controls={`faq-panel-${index}`}
                       className="flex min-h-11 w-full items-center justify-between gap-3 bg-slate-50/50 p-4 text-left text-sm font-bold text-gray-800 transition-colors hover:bg-slate-100/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:bg-gray-700/30 dark:text-gray-200 dark:hover:bg-gray-700/60"
                     >
                       <span className="min-w-0 break-words">{faq.question}</span>
@@ -128,6 +129,8 @@ export default function HelpSupport() {
 
                     {/* Collapsible content pane */}
                     <div
+                      id={`faq-panel-${index}`}
+                      aria-hidden={!isExpanded}
                       className={`transition-all duration-300 ease-in-out ${
                         isExpanded ? "max-h-40 border-t border-gray-100 dark:border-gray-700/70" : "max-h-0"
                       } overflow-hidden`}
@@ -185,10 +188,11 @@ export default function HelpSupport() {
           <form onSubmit={handleFormSubmit} className="space-y-4 [&_input]:min-h-11 [&_select]:min-h-11">
             {/* Category selection */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="support-category" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Inquiry Category
               </label>
               <select
+                id="support-category"
                 name="category"
                 value={formData.category}
                 onChange={handleInputChange}
@@ -203,10 +207,11 @@ export default function HelpSupport() {
 
             {/* Subject input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="support-subject" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Subject
               </label>
               <input
+                id="support-subject"
                 type="text"
                 name="subject"
                 value={formData.subject}
@@ -218,10 +223,11 @@ export default function HelpSupport() {
 
             {/* Message input */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
+              <label htmlFor="support-message" className="text-xs font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">
                 Detailed Message
               </label>
               <textarea
+                id="support-message"
                 name="message"
                 rows={5}
                 value={formData.message}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useLeads } from "../context/LeadContext";
 import SearchBar from "../components/common/SearchBar";
 import FilterBar from "../components/common/FilterBar";
@@ -39,6 +39,11 @@ export default function Leads() {
   const [selectedLead, setSelectedLead] = useState(null);
   const [leadPendingDelete, setLeadPendingDelete] = useState(null);
 
+  const handleCloseModal = useCallback(() => {
+    setSelectedLead(null);
+    setIsModalOpen(false);
+  }, []);
+
   // Keyboard listener to close modal on Escape key press
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -52,28 +57,22 @@ export default function Leads() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isModalOpen, leadPendingDelete]);
+  }, [handleCloseModal, isModalOpen, leadPendingDelete]);
 
   // Open modal for creating a new lead
-  const handleOpenCreateModal = () => {
+  const handleOpenCreateModal = useCallback(() => {
     setSelectedLead(null);
     setIsModalOpen(true);
-  };
+  }, []);
 
   // Open modal for editing an existing lead
-  const handleOpenEditModal = (lead) => {
+  const handleOpenEditModal = useCallback((lead) => {
     setSelectedLead(lead);
     setIsModalOpen(true);
-  };
-
-  // Close form modal
-  function handleCloseModal() {
-    setSelectedLead(null);
-    setIsModalOpen(false);
-  }
+  }, []);
 
   // Create or Update Lead handler
-  const handleFormSubmit = (data) => {
+  const handleFormSubmit = useCallback((data) => {
     if (selectedLead) {
       // Edit mode: update existing lead record
       updateLead(selectedLead.id, data);
@@ -84,41 +83,53 @@ export default function Leads() {
       toast.success("Lead added successfully");
     }
     handleCloseModal();
-  };
+  }, [addLead, handleCloseModal, selectedLead, updateLead]);
 
   // Delete Lead handler
-  const handleDeleteLead = (id) => {
+  const handleDeleteLead = useCallback((id) => {
     const leadToDelete = leads.find((lead) => lead.id === id);
     if (leadToDelete) {
       setLeadPendingDelete(leadToDelete);
     }
-  };
+  }, [leads]);
 
-  const handleConfirmDelete = () => {
+  const handleConfirmDelete = useCallback(() => {
     if (!leadPendingDelete) return;
 
     deleteLead(leadPendingDelete.id);
     setLeadPendingDelete(null);
     toast.success("Lead deleted successfully");
-  };
+  }, [deleteLead, leadPendingDelete]);
 
   // Derived filtered leads based on selected filter and text query search matches
-  const filteredLeads = leads
-    .filter(
-      (lead) =>
-        activeFilter === "All" || lead.status === activeFilter
-    )
-    .filter(
-      (lead) =>
-        lead.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.company.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        lead.email.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+  const filteredLeads = useMemo(() => {
+    const normalizedQuery = searchQuery.trim().toLowerCase();
 
-  const handleClearFilters = () => {
+    return leads.filter((lead) => {
+      const matchesStatus =
+        activeFilter === "All" || lead.status === activeFilter;
+      const matchesSearch =
+        !normalizedQuery ||
+        [lead.name, lead.company, lead.email].some((value) =>
+          String(value || "").toLowerCase().includes(normalizedQuery),
+        );
+
+      return matchesStatus && matchesSearch;
+    });
+  }, [activeFilter, leads, searchQuery]);
+
+  const handleClearFilters = useCallback(() => {
     setSearchQuery("");
     setActiveFilter("All");
-  };
+  }, []);
+
+  const handleSearchChange = useCallback((event) => {
+    setSearchQuery(event.target.value);
+  }, []);
+
+  const handleTableView = useCallback(() => setViewMode("table"), []);
+  const handleCardView = useCallback(() => setViewMode("card"), []);
+  const handleCancelDelete = useCallback(() => setLeadPendingDelete(null), []);
 
   return (
     <div className="mx-auto max-w-7xl space-y-5 lg:space-y-6">
@@ -149,7 +160,7 @@ export default function Leads() {
         <div className="w-full md:max-w-md">
           <SearchBar
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
           />
         </div>
 
@@ -157,7 +168,7 @@ export default function Leads() {
         <div className="hidden items-center gap-1 rounded-xl border border-gray-200/50 bg-slate-100 p-1 dark:border-gray-700 dark:bg-gray-700 md:flex lg:hidden">
           {/* Table view select button */}
           <button
-            onClick={() => setViewMode("table")}
+            onClick={handleTableView}
             aria-label="Table View Mode"
             className={`grid min-h-11 min-w-11 place-items-center rounded-lg transition-all ${viewMode === "table"
               ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-xs"
@@ -168,7 +179,7 @@ export default function Leads() {
           </button>
           {/* Card view select button */}
           <button
-            onClick={() => setViewMode("card")}
+            onClick={handleCardView}
             aria-label="Card View Mode"
             className={`grid min-h-11 min-w-11 place-items-center rounded-lg transition-all ${viewMode === "card"
               ? "bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-xs"
@@ -226,7 +237,12 @@ export default function Leads() {
 
       {/* MODAL DIALOG OVERLAY */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 backdrop-blur-xs transition-opacity duration-300 md:p-4">
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-0 backdrop-blur-xs transition-opacity duration-300 md:p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="lead-form-dialog-title"
+        >
           {/* Backdrop close mask trigger */}
           <div className="absolute inset-0" onClick={handleCloseModal} />
 
@@ -234,7 +250,7 @@ export default function Leads() {
           <div className="relative z-10 h-dvh w-full overflow-y-auto border-gray-100 bg-white p-4 shadow-2xl transition-all dark:border-gray-700/60 dark:bg-gray-800 md:h-auto md:max-h-[90vh] md:max-w-lg md:rounded-2xl md:border md:p-6">
             {/* Modal header details */}
             <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-100 dark:border-gray-700/60">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+              <h2 id="lead-form-dialog-title" className="text-xl font-bold text-gray-900 dark:text-white">
                 {selectedLead ? "Edit Prospect Details" : "Create New Lead"}
               </h2>
               <button
@@ -268,7 +284,7 @@ export default function Leads() {
           <button
             type="button"
             className="absolute inset-0 cursor-default"
-            onClick={() => setLeadPendingDelete(null)}
+            onClick={handleCancelDelete}
             aria-label="Cancel deleting lead"
           />
 
@@ -290,7 +306,8 @@ export default function Leads() {
             <div className="mt-6 flex justify-end gap-3">
               <button
                 type="button"
-                onClick={() => setLeadPendingDelete(null)}
+                autoFocus
+                onClick={handleCancelDelete}
                 className="min-h-11 rounded-xl border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700"
               >
                 Cancel

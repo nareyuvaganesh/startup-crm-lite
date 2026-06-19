@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 
 /**
  * Persists React state in the browser's localStorage.
@@ -54,7 +54,7 @@ export default function useLocalStorage(key, initialValue) {
    * @param {React.SetStateAction<T>} value - A value or updater function.
    * @returns {void}
    */
-  const setValue = (value) => {
+  const setValue = useCallback((value) => {
     setStoredValue((currentValue) => {
       const valueToStore =
         value instanceof Function ? value(currentValue) : value;
@@ -69,7 +69,7 @@ export default function useLocalStorage(key, initialValue) {
 
       return valueToStore;
     });
-  };
+  }, [key]);
 
   return [storedValue, setValue];
 }

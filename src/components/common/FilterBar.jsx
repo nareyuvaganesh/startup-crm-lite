@@ -1,11 +1,9 @@
+import { memo, useMemo } from "react";
+import { STATUS_OPTIONS } from "../../constants";
+
 const FILTERS = [
   "All",
-  "New",
-  "Contacted",
-  "Meeting Scheduled",
-  "Proposal Sent",
-  "Won",
-  "Lost",
+  ...STATUS_OPTIONS,
 ];
 
 /**
@@ -17,11 +15,19 @@ const FILTERS = [
  * @param {function} props.onFilterChange - Callback when a filter is selected
  * @param {Array<object>} props.leads - Full leads array used to calculate counts
  */
-export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) {
-  const getCount = (filter) => {
-    if (filter === "All") return leads.length;
-    return leads.filter((lead) => lead.status === filter).length;
-  };
+function FilterBar({ activeFilter, onFilterChange, leads = [] }) {
+  const counts = useMemo(
+    () =>
+      leads.reduce(
+        (result, lead) => {
+          result.All += 1;
+          if (Object.hasOwn(result, lead.status)) result[lead.status] += 1;
+          return result;
+        },
+        Object.fromEntries(FILTERS.map((filter) => [filter, 0])),
+      ),
+    [leads],
+  );
 
   return (
     <div
@@ -31,7 +37,7 @@ export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) 
     >
       {FILTERS.map((filter) => {
         const isActive = activeFilter === filter;
-        const count = getCount(filter);
+        const count = counts[filter];
 
         return (
           <button
@@ -51,3 +57,5 @@ export default function FilterBar({ activeFilter, onFilterChange, leads = [] }) 
     </div>
   );
 }
+
+export default memo(FilterBar);

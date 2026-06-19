@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import { useLeads } from "../context/LeadContext";
 import {
   getFilteredData,
@@ -18,16 +19,9 @@ import {
   Legend,
 } from "recharts";
 import { TrendingUp, FileText, DollarSign, Award, Activity } from "lucide-react";
-
-// Colors for status breakdown bars
-const STATUS_COLORS = {
-  "New": "#3b82f6",
-  "Contacted": "#6366f1",
-  "Meeting Scheduled": "#f59e0b",
-  "Proposal Sent": "#8b5cf6",
-  "Won": "#10b981",
-  "Lost": "#ef4444",
-};
+import { STATUS_OPTIONS } from "../constants";
+import { STATUS_COLORS } from "../constants/analyticsColors";
+import ReportMetricCard from "../components/reports/ReportMetricCard";
 
 /**
  * Reports Page Component
@@ -40,38 +34,54 @@ const STATUS_COLORS = {
  */
 export default function Reports() {
   const { leads } = useLeads();
-  const totalLeads = leads.length;
+  const reportData = useMemo(() => {
+    const summary = leads.reduce(
+      (result, lead) => {
+        const value = Number(lead.amount ?? lead.value) || 0;
+        result.totalValue += value;
+        if (lead.status === "Won") {
+          result.wonCount += 1;
+          result.totalRevenue += value;
+        }
+        if (Object.hasOwn(result.statusCounts, lead.status)) {
+          result.statusCounts[lead.status] += 1;
+        }
+        return result;
+      },
+      {
+        wonCount: 0,
+        totalRevenue: 0,
+        totalValue: 0,
+        statusCounts: Object.fromEntries(
+          STATUS_OPTIONS.map((status) => [status, 0]),
+        ),
+      },
+    );
+    const { currentLeads, days } = getFilteredData(leads, "Monthly");
 
-  // Compute dynamic KPIs
-  const wonLeads = leads.filter((l) => l.status === "Won");
-  
-  const totalRevenue = wonLeads.reduce((sum, l) => sum + (Number(l.value) || 0), 0);
-  
-  const averageValue = totalLeads > 0 
-    ? Math.round(leads.reduce((sum, l) => sum + (Number(l.value) || 0), 0) / totalLeads)
-    : 0;
+    return {
+      ...summary,
+      totalLeads: leads.length,
+      averageValue: leads.length
+        ? Math.round(summary.totalValue / leads.length)
+        : 0,
+      conversionRate: leads.length
+        ? ((summary.wonCount / leads.length) * 100).toFixed(1)
+        : "0.0",
+      statusChartResult: getStatusData(currentLeads, []),
+      growthChartResult: getLeadGrowthData(currentLeads, days),
+    };
+  }, [leads]);
 
-  const conversionRate = totalLeads > 0 
-    ? ((wonLeads.length / totalLeads) * 100).toFixed(1)
-    : "0.0";
-
-  // Aggregate status totals
-  const statusCounts = leads.reduce((acc, lead) => {
-    acc[lead.status] = (acc[lead.status] || 0) + 1;
-    return acc;
-  }, {
-    "New": 0,
-    "Contacted": 0,
-    "Meeting Scheduled": 0,
-    "Proposal Sent": 0,
-    "Won": 0,
-    "Lost": 0,
-  });
-
-  // Calculate charts data using analyticsHelpers
-  const { currentLeads, days } = getFilteredData(leads, "Monthly");
-  const statusChartResult = getStatusData(currentLeads, []);
-  const growthChartResult = getLeadGrowthData(currentLeads, days);
+  const {
+    averageValue,
+    conversionRate,
+    growthChartResult,
+    statusChartResult,
+    statusCounts,
+    totalLeads,
+    totalRevenue,
+  } = reportData;
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-5 lg:space-y-6">
@@ -87,69 +97,10 @@ export default function Reports() {
 
       {/* KPI Cards section */}
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4 lg:gap-5">
-        {/* Total Leads Card */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Total Leads
-            </span>
-            <Activity className="w-5 h-5 text-blue-500" />
-          </div>
-          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
-            {totalLeads}
-          </p>
-          <span className="text-xs text-gray-400 font-medium">
-            Active in database
-          </span>
-        </div>
-
-        {/* Total Won Revenue Card */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Won Revenue
-            </span>
-            <DollarSign className="w-5 h-5 text-green-500" />
-          </div>
-          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
-            ${totalRevenue.toLocaleString()}
-          </p>
-          <span className="text-xs text-gray-400 font-medium">
-            Total closed won deals
-          </span>
-        </div>
-
-        {/* Average Deal Value Card */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Avg Deal Value
-            </span>
-            <TrendingUp className="w-5 h-5 text-violet-500" />
-          </div>
-          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
-            ${averageValue.toLocaleString()}
-          </p>
-          <span className="text-xs text-gray-400 font-medium">
-            Mean of all lead values
-          </span>
-        </div>
-
-        {/* Win / Conversion Rate Card */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-shadow duration-200 hover:shadow-lg dark:border-gray-700/50 dark:bg-gray-800 sm:p-5">
-          <div className="flex justify-between items-start mb-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-gray-400">
-              Conversion %
-            </span>
-            <Award className="w-5 h-5 text-amber-500" />
-          </div>
-          <p className="truncate text-2xl font-extrabold text-gray-900 dark:text-white">
-            {conversionRate}%
-          </p>
-          <span className="text-xs text-gray-400 font-medium">
-            Won Leads / Total Leads
-          </span>
-        </div>
+        <ReportMetricCard icon={Activity} label="Total Leads" value={totalLeads} description="Active in database" iconClassName="text-blue-500" />
+        <ReportMetricCard icon={DollarSign} label="Won Revenue" value={`$${totalRevenue.toLocaleString()}`} description="Total closed won deals" iconClassName="text-green-600" />
+        <ReportMetricCard icon={TrendingUp} label="Avg Deal Value" value={`$${averageValue.toLocaleString()}`} description="Mean of all lead values" iconClassName="text-violet-600" />
+        <ReportMetricCard icon={Award} label="Conversion %" value={`${conversionRate}%`} description="Won Leads / Total Leads" iconClassName="text-amber-600" />
       </div>
 
       {/* Lead Status Breakdown Section */}

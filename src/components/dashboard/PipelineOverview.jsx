@@ -53,21 +53,20 @@ const STATUS_METADATA = {
  * @param {object} props - Component props
  * @param {Array<object>} props.leads - Array of lead objects containing a 'status' field
  */
-export default function PipelineOverview({ leads = [] }) {
+function PipelineOverview({ leads = [] }) {
   const totalLeads = leads.length;
 
-  // Aggregate leads by status
-  const aggregates = Object.keys(STATUS_METADATA).reduce((acc, status) => {
-    acc[status] = 0;
-    return acc;
-  }, {});
-
-  leads.forEach((lead) => {
-    const status = lead.status;
-    if (status && Object.prototype.hasOwnProperty.call(aggregates, status)) {
-      aggregates[status]++;
-    }
-  });
+  const aggregates = useMemo(() => {
+    const counts = Object.fromEntries(
+      Object.keys(STATUS_METADATA).map((status) => [status, 0]),
+    );
+    leads.forEach((lead) => {
+      if (Object.prototype.hasOwnProperty.call(counts, lead.status)) {
+        counts[lead.status] += 1;
+      }
+    });
+    return counts;
+  }, [leads]);
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6">
@@ -148,3 +147,6 @@ export default function PipelineOverview({ leads = [] }) {
     </div>
   );
 }
+
+export default memo(PipelineOverview);
+import { memo, useMemo } from "react";

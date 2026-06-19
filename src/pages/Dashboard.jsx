@@ -23,25 +23,32 @@ export default function Dashboard() {
   const { leads } = useLeads();
 
   // Compute current and previous monthly datasets using helper functions
-  const { currentLeads, previousLeads } = getFilteredData(leads, "Monthly");
-  const monthlyKpis = calculateKPIs(currentLeads, previousLeads);
+  const dashboardMetrics = useMemo(() => {
+    const { currentLeads, previousLeads } = getFilteredData(leads, "Monthly");
+    const monthlyKpis = calculateKPIs(currentLeads, previousLeads);
+    const totals = leads.reduce(
+      (result, lead) => {
+        if (lead.status === "Won") {
+          result.won += 1;
+          result.revenue += Number(lead.amount ?? lead.value) || 0;
+        } else if (lead.status !== "Lost") {
+          result.active += 1;
+        }
+        return result;
+      },
+      { won: 0, revenue: 0, active: 0 },
+    );
 
-  // Compute all-time database metrics
-  const totalLeadsAllTime = leads.length;
-  
-  const wonLeadsAllTime = leads.filter((lead) => lead.status === "Won").length;
-  
-  const revenueAllTime = leads
-    .filter((lead) => lead.status === "Won")
-    .reduce((sum, lead) => sum + (Number(lead.amount ?? lead.value) || 0), 0);
-
-  const conversionRateAllTime = totalLeadsAllTime > 0
-    ? Math.round((wonLeadsAllTime / totalLeadsAllTime) * 100)
-    : 0;
-
-  const activeLeadsAllTime = leads.filter(
-    (lead) => lead.status !== "Won" && lead.status !== "Lost"
-  ).length;
+    return {
+      monthlyKpis,
+      total: leads.length,
+      revenue: totals.revenue,
+      active: totals.active,
+      conversionRate: leads.length
+        ? Math.round((totals.won / leads.length) * 100)
+        : 0,
+    };
+  }, [leads]);
 
   return (
     <div className="mx-auto max-w-7xl space-y-5 lg:space-y-6">
@@ -63,9 +70,9 @@ export default function Dashboard() {
         {/* Total Leads Card */}
         <StatsCard
           title="Total Leads"
-          value={totalLeadsAllTime}
+          value={dashboardMetrics.total}
           icon={Users}
-          change={monthlyKpis.leadGrowth}
+          change={dashboardMetrics.monthlyKpis.leadGrowth}
           trendLabel="vs last month"
           color="blue"
         />
@@ -73,9 +80,9 @@ export default function Dashboard() {
         {/* Total Revenue Card */}
         <StatsCard
           title="Total Revenue"
-          value={`$${revenueAllTime.toLocaleString()}`}
+          value={`$${dashboardMetrics.revenue.toLocaleString()}`}
           icon={DollarSign}
-          change={monthlyKpis.revenueGrowth}
+          change={dashboardMetrics.monthlyKpis.revenueGrowth}
           trendLabel="revenue growth"
           color="green"
         />
@@ -83,9 +90,9 @@ export default function Dashboard() {
         {/* Conversion Rate Card */}
         <StatsCard
           title="Conversion Rate"
-          value={`${conversionRateAllTime}%`}
+          value={`${dashboardMetrics.conversionRate}%`}
           icon={Award}
-          change={monthlyKpis.conversionGrowth}
+          change={dashboardMetrics.monthlyKpis.conversionGrowth}
           trendLabel="conversion"
           color="yellow"
         />
@@ -93,9 +100,9 @@ export default function Dashboard() {
         {/* Active Deals Card */}
         <StatsCard
           title="Active Leads"
-          value={activeLeadsAllTime}
+          value={dashboardMetrics.active}
           icon={TrendingUp}
-          change={monthlyKpis.activeGrowth}
+          change={dashboardMetrics.monthlyKpis.activeGrowth}
           trendLabel="active leads"
           color="blue"
         />
@@ -121,3 +128,4 @@ export default function Dashboard() {
     </div>
   );
 }
+import { useMemo } from "react";

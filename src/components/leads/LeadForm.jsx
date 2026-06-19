@@ -1,9 +1,6 @@
 import { useState } from "react";
 import { PlusCircle, CheckCircle, XCircle } from "lucide-react";
-
-// Dropdown options constants
-const STATUS_OPTIONS = ["New", "Contacted", "Meeting Scheduled", "Proposal Sent", "Won", "Lost"];
-const SOURCE_OPTIONS = ["Website", "Referral", "LinkedIn", "Cold Call", "Email Campaign", "Other"];
+import { SOURCE_OPTIONS, STATUS_OPTIONS } from "../../constants";
 
 /**
  * LeadForm component
@@ -39,8 +36,8 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
   });
 
   // Input value changes handler
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+  const handleChange = (event) => {
+    const { name, value } = event.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
     
     // Clear validation error when user types
@@ -50,8 +47,8 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
   };
 
   // Form submission handler
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = (event) => {
+    event.preventDefault();
 
     const newErrors = {};
 
@@ -102,16 +99,20 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
           <input
             id="lead-name"
             type="text"
+            autoFocus
             name="name"
             value={formData.name}
             onChange={handleChange}
             placeholder="e.g. Sarah Connor"
+            required
+            aria-invalid={Boolean(errors.name)}
+            aria-describedby={errors.name ? "lead-name-error" : undefined}
             className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.name ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
           {errors.name && (
-            <p className="text-red-500 dark:text-red-400 text-xs font-bold mt-1">
+            <p id="lead-name-error" role="alert" className="text-red-600 dark:text-red-400 text-xs font-bold mt-1">
               {errors.name}
             </p>
           )}
@@ -129,12 +130,15 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
             value={formData.company}
             onChange={handleChange}
             placeholder="e.g. Cyberdyne Systems"
+            required
+            aria-invalid={Boolean(errors.company)}
+            aria-describedby={errors.company ? "lead-company-error" : undefined}
             className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.company ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
           {errors.company && (
-            <p className="text-red-500 dark:text-red-400 text-xs font-bold mt-1">
+            <p id="lead-company-error" role="alert" className="text-red-600 dark:text-red-400 text-xs font-bold mt-1">
               {errors.company}
             </p>
           )}
@@ -147,17 +151,20 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
           </label>
           <input
             id="lead-email"
-            type="text"
+            type="email"
             name="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="e.g. sarah@cyberdyne.com"
+            required
+            aria-invalid={Boolean(errors.email)}
+            aria-describedby={errors.email ? "lead-email-error" : undefined}
             className={`min-h-11 w-full rounded-xl border bg-transparent px-3 py-2 text-sm text-gray-900 placeholder-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:text-white dark:focus:ring-blue-400/30 ${
               errors.email ? "border-red-500 focus:ring-red-500/30" : "border-gray-200 dark:border-gray-700"
             }`}
           />
           {errors.email && (
-            <p className="text-red-500 dark:text-red-400 text-xs font-bold mt-1">
+            <p id="lead-email-error" role="alert" className="text-red-600 dark:text-red-400 text-xs font-bold mt-1">
               {errors.email}
             </p>
           )}
@@ -170,7 +177,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
           </label>
           <input
             id="lead-phone"
-            type="text"
+            type="tel"
             name="phone"
             value={formData.phone}
             onChange={handleChange}
@@ -187,6 +194,7 @@ export default function LeadForm({ initialData = null, onSubmit, onCancel }) {
           <input
             id="lead-value"
             type="number"
+            min="0"
             name="value"
             value={formData.value}
             onChange={handleChange}

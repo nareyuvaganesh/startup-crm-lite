@@ -14,7 +14,7 @@ import {
 import toast from "react-hot-toast";
 import { useProfile } from "../context/ProfileContext";
 
-const fields = [
+const PROFILE_FIELDS = [
   {
     name: "firstName",
     label: "First name",
@@ -227,7 +227,7 @@ export default function Profile() {
 
           <form onSubmit={handleSaveChanges} className="mt-6 space-y-7">
             <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-5">
-              {fields.map((field, index) => (
+              {PROFILE_FIELDS.map((field, index) => (
                 <label key={field.name} className="block min-w-0">
                   <span className="mb-2 block text-[13px] font-bold text-gray-700 dark:text-gray-300">
                     {field.label}

@@ -1,4 +1,3 @@
-import { useState, useEffect, useRef } from "react";
 import { Search, X } from "lucide-react";
 
 /**
@@ -10,34 +9,8 @@ import { Search, X } from "lucide-react";
  * @param {function} props.onChange - Called with a synthetic event after debounce
  */
 export default function SearchBar({ value, onChange }) {
-  const [prevValue, setPrevValue] = useState(value);
-  const [localValue, setLocalValue] = useState(value);
-
-  // Sync localValue with prop value when it changes from the parent (e.g. cleared filters)
-  if (value !== prevValue) {
-    setPrevValue(value);
-    setLocalValue(value);
-  }
-
-  // Use a ref for onChange to prevent the debounce timer from resetting if onChange reference changes
-  const onChangeRef = useRef(onChange);
-  useEffect(() => {
-    onChangeRef.current = onChange;
-  }, [onChange]);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      if (localValue !== value) {
-        onChangeRef.current({ target: { value: localValue } });
-      }
-    }, 300);
-
-    return () => clearTimeout(timer);
-  }, [localValue, value]);
-
   const handleClear = () => {
-    setLocalValue("");
-    onChangeRef.current({ target: { value: "" } });
+    onChange({ target: { value: "" } });
   };
 
   return (
@@ -51,11 +24,11 @@ export default function SearchBar({ value, onChange }) {
         type="text"
         aria-label="Search leads by name, company, or email"
         placeholder="Search by name, company, or email..."
-        value={localValue}
-        onChange={(e) => setLocalValue(e.target.value)}
+        value={value}
+        onChange={onChange}
         className="min-h-11 w-full rounded-xl border border-gray-200 bg-slate-50 py-2.5 pl-10 pr-10 text-sm text-gray-900 transition-all duration-200 placeholder:text-gray-400 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/40 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder:text-gray-500"
       />
-      {localValue && (
+      {value && (
         <button
           type="button"
           onClick={handleClear}

@@ -14,7 +14,7 @@ import {
 import { useProfile } from "../../context/ProfileContext";
 import DarkModeToggle from "./DarkModeToggle";
 
-const primaryLinks = [
+const PRIMARY_LINKS = [
   {
     to: "/",
     label: "Dashboard",
@@ -35,7 +35,7 @@ const primaryLinks = [
   },
 ];
 
-const mobileLinks = [
+const MOBILE_LINKS = [
   {
     to: "/",
     label: "Dashboard",
@@ -63,7 +63,7 @@ const mobileLinks = [
   },
 ];
 
-const secondaryLinks = [
+const SECONDARY_LINKS = [
   {
     to: "/reports",
     label: "Reports",
@@ -133,7 +133,7 @@ export default function Sidebar({
         </div>
 
         <nav className="flex flex-1 flex-col gap-1.5 overflow-y-auto">
-          {primaryLinks.map(({ to, label, subLabel, icon: Icon }) => (
+          {PRIMARY_LINKS.map(({ to, label, subLabel, icon: Icon }) => (
             <NavLink key={to} to={to} className={desktopLinkClass}>
               <Icon className="size-5 shrink-0" />
               <span className="min-w-0">
@@ -147,7 +147,7 @@ export default function Sidebar({
 
           <div className="my-3 border-t border-gray-200 dark:border-gray-700" />
 
-          {secondaryLinks.map(({ to, label, subLabel, icon: Icon }) => (
+          {SECONDARY_LINKS.map(({ to, label, subLabel, icon: Icon }) => (
             <NavLink key={to} to={to} className={desktopLinkClass}>
               <Icon className="size-5 shrink-0" />
               <span className="min-w-0">
@@ -215,7 +215,7 @@ export default function Sidebar({
             </div>
 
             <nav className="grid grid-cols-2 gap-2">
-              {secondaryLinks.map(({ to, label, icon: Icon }) => (
+              {SECONDARY_LINKS.map(({ to, label, icon: Icon }) => (
                 <NavLink
                   key={to}
                   to={to}
@@ -244,7 +244,7 @@ export default function Sidebar({
       )}
 
       <nav className="fixed inset-x-0 bottom-0 z-40 flex min-h-[4.5rem] items-center border-t border-gray-200/80 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-gray-700/80 dark:bg-gray-900/95 md:hidden">
-        {mobileLinks.map(({ to, label, icon: Icon }) => (
+        {MOBILE_LINKS.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
             to={to}

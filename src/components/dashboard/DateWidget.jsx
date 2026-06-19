@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { CalendarDays } from "lucide-react";
 
-const dateFormatter = new Intl.DateTimeFormat("en-US", {
+const DATE_FORMATTER = new Intl.DateTimeFormat("en-US", {
   day: "2-digit",
   month: "short",
   year: "numeric",
 });
 
-const timeFormatter = new Intl.DateTimeFormat("en-US", {
+const TIME_FORMATTER = new Intl.DateTimeFormat("en-US", {
   hour: "numeric",
   minute: "2-digit",
   hour12: true,
@@ -30,14 +30,14 @@ export default function DateWidget() {
 
       <div className="flex min-w-0 flex-1 items-center justify-between gap-2.5 sm:justify-start">
         <p className="truncate text-sm font-semibold text-gray-900 dark:text-white">
-          {dateFormatter.format(now)}
+          {DATE_FORMATTER.format(now)}
         </p>
         <span className="h-4 w-px bg-gray-200 dark:bg-gray-700" aria-hidden="true" />
         <p
           className="shrink-0 whitespace-nowrap text-sm font-medium tabular-nums text-gray-500 dark:text-gray-400"
-          aria-label={`Current time ${timeFormatter.format(now)}`}
+          aria-label={`Current time ${TIME_FORMATTER.format(now)}`}
         >
-          {timeFormatter.format(now)}
+          {TIME_FORMATTER.format(now)}
         </p>
       </div>
     </div>
