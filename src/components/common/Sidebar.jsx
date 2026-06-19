@@ -109,7 +109,7 @@ export default function Sidebar({
     }`;
 
   const mobileLinkClass = ({ isActive }) =>
-    `flex min-h-14 min-w-14 flex-1 flex-col items-center justify-center rounded-xl transition-colors duration-200 ${
+    `flex min-h-14 min-w-14 flex-1 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold transition-colors duration-200 ${
       isActive
         ? "text-blue-600 dark:text-blue-400"
         : "text-gray-500 dark:text-gray-400"
@@ -243,7 +243,7 @@ export default function Sidebar({
         </div>
       )}
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 flex min-h-16 items-center border-t border-gray-200 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-gray-700 dark:bg-gray-900/95 md:hidden">
+      <nav className="fixed inset-x-0 bottom-0 z-40 flex min-h-[4.5rem] items-center border-t border-gray-200/80 bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_24px_rgba(15,23,42,0.08)] backdrop-blur-xl dark:border-gray-700/80 dark:bg-gray-900/95 md:hidden">
         {mobileLinks.map(({ to, label, icon: Icon }) => (
           <NavLink
             key={to}
@@ -253,7 +253,7 @@ export default function Sidebar({
             className={mobileLinkClass}
           >
             <Icon className="size-5" />
-            <span className="sr-only">{label}</span>
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>

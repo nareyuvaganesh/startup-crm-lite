@@ -2,25 +2,47 @@
 import { createContext, useContext } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 
-const defaultProfile = {
-  firstName: "John",
-  lastName: "Doe",
-  email: "john.doe@startupcrm.io",
-  phone: "9876543210",
-  company: "Acme Enterprises",
-  role: "Founder & CEO",
-  location: "San Francisco, CA",
-  joinedDate: "June 2025",
-  department: "Executive Operations",
+const emptyProfile = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  company: "",
+  role: "",
+  location: "",
+  joinedDate: "",
+  department: "",
 };
 
 const ProfileContext = createContext(null);
 
-export function ProfileProvider({ children }) {
-  const [profile, setProfile] = useLocalStorage(
-    "startup-crm-profile",
-    defaultProfile,
+const normalizeProfile = (value) => {
+  const savedProfile = value && typeof value === "object" ? value : {};
+
+  return Object.fromEntries(
+    Object.keys(emptyProfile).map((key) => [
+      key,
+      typeof savedProfile[key] === "string" ? savedProfile[key] : "",
+    ]),
   );
+};
+
+export function ProfileProvider({ children }) {
+  const [storedProfile, setStoredProfile] = useLocalStorage(
+    "startup-crm-profile",
+    emptyProfile,
+  );
+  const profile = normalizeProfile(storedProfile);
+
+  const setProfile = (value) => {
+    setStoredProfile((currentProfile) => {
+      const current = normalizeProfile(currentProfile);
+      const nextProfile =
+        value instanceof Function ? value(current) : value;
+
+      return normalizeProfile(nextProfile);
+    });
+  };
 
   return (
     <ProfileContext.Provider value={{ profile, setProfile }}>

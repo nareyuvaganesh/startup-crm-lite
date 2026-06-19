@@ -1,289 +1,275 @@
-import { useState } from "react";
-import { User, Mail, Phone, MapPin, Calendar, CheckCircle } from "lucide-react";
+import { useRef, useState } from "react";
+import {
+  Building2,
+  CalendarDays,
+  Check,
+  LoaderCircle,
+  Mail,
+  MapPin,
+  Pencil,
+  Phone,
+  ShieldCheck,
+  UserRound,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import { useProfile } from "../context/ProfileContext";
 
-/**
- * Profile Page Component
- * Renders the user profile management interface.
- * Features:
- * - A high-fidelity user profile highlight card on the left/top.
- * - An editable details form on the right/bottom to change account fields.
- * - Form validation (email, phone, text lengths).
- * - Simulated save state with toast success notification.
- * 
- * @component
- */
+const fields = [
+  {
+    name: "firstName",
+    label: "First name",
+    placeholder: "First name",
+    autoComplete: "given-name",
+  },
+  {
+    name: "lastName",
+    label: "Last name",
+    placeholder: "Last name",
+    autoComplete: "family-name",
+  },
+  {
+    name: "email",
+    label: "Email address",
+    placeholder: "you@company.com",
+    type: "email",
+    autoComplete: "email",
+  },
+  {
+    name: "phone",
+    label: "Phone number",
+    placeholder: "Phone number",
+    type: "tel",
+    autoComplete: "tel",
+  },
+  {
+    name: "company",
+    label: "Company",
+    placeholder: "Company name",
+    autoComplete: "organization",
+  },
+  {
+    name: "role",
+    label: "Job title",
+    placeholder: "Your role",
+    autoComplete: "organization-title",
+  },
+  {
+    name: "location",
+    label: "Location",
+    placeholder: "City, country",
+    autoComplete: "address-level2",
+  },
+  {
+    name: "department",
+    label: "Department",
+    placeholder: "Department",
+    autoComplete: "organization",
+  },
+];
+
+const displayValue = (value, fallback = "Not provided") =>
+  value?.trim() || fallback;
+
 export default function Profile() {
   const { profile, setProfile } = useProfile();
-
-  const [formState, setFormState] = useState({ ...profile });
+  const [formState, setFormState] = useState(profile);
   const [isSaving, setIsSaving] = useState(false);
+  const firstNameInputRef = useRef(null);
 
-  // Form input changes handler
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormState((prev) => ({ ...prev, [name]: value }));
+  const handleInputChange = ({ target: { name, value } }) => {
+    setFormState((current) => ({ ...current, [name]: value }));
   };
 
-  // Profile save updates handler
-  const handleSaveChanges = (e) => {
-    e.preventDefault();
+  const handleSaveChanges = (event) => {
+    event.preventDefault();
 
-    // Standard Email pattern validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(formState.email)) {
+    if (!formState.firstName.trim() || !formState.lastName.trim()) {
+      toast.error("First name and last name cannot be empty.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formState.email)) {
       toast.error("Please enter a valid email address.");
       return;
     }
 
-    // Phone verification (must be a number and between 8-15 digits)
     const phoneDigits = formState.phone.replace(/\D/g, "");
     if (phoneDigits.length < 8 || phoneDigits.length > 15) {
       toast.error("Please enter a valid phone number (8-15 digits).");
       return;
     }
 
-    // Text field validation
-    if (!formState.firstName.trim() || !formState.lastName.trim()) {
-      toast.error("First name and last name cannot be empty.");
-      return;
-    }
-
     setIsSaving(true);
-
-    // Simulate asynchronous network request
-    setTimeout(() => {
+    window.setTimeout(() => {
       setProfile({ ...formState });
       setIsSaving(false);
-      toast.success("Profile updated successfully!");
-    }, 800);
+      toast.success("Profile updated successfully.");
+    }, 500);
   };
 
-  // Reset form to active profile fields
   const handleCancel = () => {
-    setFormState({ ...profile });
+    setFormState(profile);
     toast.success("Changes discarded.");
   };
 
-  const userInitials = `${profile.firstName.slice(0, 1)}${profile.lastName.slice(0, 1)}`.toUpperCase();
+  const fullName =
+    [formState.firstName, formState.lastName].filter(Boolean).join(" ") ||
+    "Your profile";
+  const initials =
+    [formState.firstName, formState.lastName]
+      .filter(Boolean)
+      .map((name) => name.trim().charAt(0))
+      .join("")
+      .toUpperCase() || "?";
+
+  const profileDetails = [
+    [Mail, "Email", formState.email],
+    [Phone, "Phone", formState.phone],
+    [MapPin, "Location", formState.location],
+    [CalendarDays, "Joined", formState.joinedDate],
+  ];
 
   return (
-    <div className="mx-auto w-full max-w-5xl space-y-5 lg:space-y-6">
-      <div>
-        <h1 className="text-2xl font-extrabold tracking-tight text-gray-900 dark:text-white sm:text-3xl">
+    <div className="mx-auto w-full max-w-6xl space-y-5 pb-2 sm:space-y-6 md:pb-0">
+      <header className="px-1 sm:px-0">
+        <h1 className="text-2xl font-extrabold tracking-tight text-gray-950 dark:text-white sm:text-3xl">
           My Profile
         </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          Manage your account profile details and business contact settings.
+        <p className="mt-1.5 max-w-2xl text-sm leading-6 text-gray-500 dark:text-gray-400">
+          Manage the personal details shown across your CRM workspace.
         </p>
-      </div>
+      </header>
 
-      <div className="grid min-w-0 grid-cols-1 items-start gap-5 lg:grid-cols-3 lg:gap-6">
-        {/* Left Column: User Profile Overview Card */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 text-center shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6 lg:col-span-1">
-          <div className="relative w-24 h-24 mx-auto mb-4 rounded-full bg-blue-100 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex items-center justify-center text-3xl font-black border-4 border-blue-50 dark:border-blue-900/10">
-            {userInitials}
-            <span className="absolute bottom-1 right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white dark:border-gray-800" title="Active Account" />
+      <div className="grid min-w-0 grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.7fr)] lg:gap-6">
+        <section className="group min-w-0 overflow-hidden rounded-2xl border border-gray-200/70 bg-white shadow-sm shadow-slate-900/5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10 dark:border-gray-700/70 dark:bg-gray-800 dark:shadow-black/10 dark:hover:shadow-black/20 lg:sticky lg:top-22">
+          <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-indigo-600 to-violet-700 px-5 pb-16 pt-5 sm:px-6">
+            <div className="absolute -right-16 -top-16 size-40 rounded-full bg-white/10 blur-2xl" />
+            <div className="absolute -bottom-20 -left-12 size-44 rounded-full bg-cyan-300/15 blur-3xl" />
+            <div className="relative flex items-center justify-between">
+              <span className="inline-flex min-h-7 items-center gap-1.5 rounded-full bg-white/15 px-3 text-[11px] font-bold text-white ring-1 ring-white/20 backdrop-blur-sm">
+                <span className="size-1.5 rounded-full bg-emerald-300 shadow-[0_0_0_3px_rgba(110,231,183,0.18)]" />
+                Active account
+              </span>
+              <ShieldCheck className="size-5 text-white/75" aria-hidden="true" />
+            </div>
           </div>
 
-          <h3 className="break-words text-xl font-bold text-gray-900 dark:text-white">
-            {profile.firstName} {profile.lastName}
-          </h3>
-          <p className="text-sm font-semibold text-blue-600 dark:text-blue-400 mt-0.5">
-            {profile.role}
-          </p>
-          <p className="mt-1 break-words text-xs text-gray-400 dark:text-gray-500">
-            {profile.department} • {profile.company}
-          </p>
+          <div className="-mt-12 px-5 pb-5 sm:px-6 sm:pb-6">
+            <div className="relative z-10 flex min-w-0 items-end gap-4">
+              <div className="relative grid size-24 shrink-0 place-items-center rounded-2xl border-4 border-white bg-gradient-to-br from-blue-50 to-indigo-100 text-3xl font-black text-blue-700 shadow-lg shadow-slate-900/15 dark:border-gray-800 dark:from-gray-700 dark:to-gray-700/80 dark:text-blue-300">
+                {initials}
+                <span
+                  className="absolute -bottom-1 -right-1 size-4 rounded-full border-[3px] border-white bg-emerald-500 dark:border-gray-800"
+                  title="Online"
+                />
+                <button
+                  type="button"
+                  onClick={() => firstNameInputRef.current?.focus()}
+                  aria-label="Edit profile details"
+                  className="absolute -right-2 -top-2 grid size-9 place-items-center rounded-xl border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:scale-105 hover:bg-gray-50 hover:text-blue-600 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-blue-300"
+                >
+                  <Pencil className="size-3.5" />
+                </button>
+              </div>
 
-          <hr className="my-5 border-gray-100 dark:border-gray-700/80" />
+              <div className="min-w-0 pb-1.5">
+                <h2 className="truncate text-xl font-extrabold tracking-tight text-gray-950 dark:text-white sm:text-2xl">
+                  {fullName}
+                </h2>
+                <p className="mt-1 truncate text-sm font-semibold text-blue-600 dark:text-blue-400">
+                  {displayValue(formState.role, "Add your job title")}
+                </p>
+              </div>
+            </div>
 
-          {/* Quick Info Details */}
-          <div className="space-y-3.5 text-left text-sm">
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <Mail className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="truncate" title={profile.email}>
-                {profile.email}
+            <div className="mt-6 flex min-w-0 items-center gap-2.5 rounded-xl border border-gray-100 bg-gray-50/80 px-3.5 py-3 text-sm text-gray-600 dark:border-gray-700/70 dark:bg-gray-900/40 dark:text-gray-300">
+              <Building2 className="size-4 shrink-0 text-blue-500 dark:text-blue-400" />
+              <span className="truncate">
+                {displayValue(formState.department, "Department")}
+                {formState.company ? ` · ${formState.company}` : ""}
               </span>
             </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <Phone className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="min-w-0 break-words">{profile.phone}</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="min-w-0 break-words">{profile.location}</span>
-            </div>
-            <div className="flex items-center gap-3 text-gray-600 dark:text-gray-300">
-              <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-              <span className="min-w-0 break-words">Joined {profile.joinedDate}</span>
+
+            <dl className="mt-6 space-y-4">
+              {profileDetails.map(([Icon, label, value]) => (
+                <div key={label} className="flex min-w-0 items-start gap-3">
+                  <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-gray-100 text-gray-500 transition-colors group-hover:bg-blue-50 group-hover:text-blue-600 dark:bg-gray-700/70 dark:text-gray-300 dark:group-hover:bg-blue-500/10 dark:group-hover:text-blue-300">
+                    <Icon className="size-4" />
+                  </span>
+                  <div className="min-w-0 pt-1">
+                    <dt className="text-[11px] font-semibold uppercase tracking-wide text-gray-400 dark:text-gray-500">
+                      {label}
+                    </dt>
+                    <dd className="mt-0.5 break-words text-sm font-medium text-gray-700 dark:text-gray-200">
+                      {displayValue(value)}
+                    </dd>
+                  </div>
+                </div>
+              ))}
+            </dl>
+          </div>
+        </section>
+
+        <section className="min-w-0 rounded-2xl border border-gray-200/70 bg-white p-5 shadow-sm shadow-slate-900/5 transition-shadow duration-300 hover:shadow-md hover:shadow-slate-900/10 dark:border-gray-700/70 dark:bg-gray-800 dark:shadow-black/10 dark:hover:shadow-black/20 sm:p-6 lg:p-7">
+          <div className="flex items-start gap-3 border-b border-gray-100 pb-5 dark:border-gray-700/80">
+            <span className="grid size-10 shrink-0 place-items-center rounded-xl bg-blue-50 text-blue-600 dark:bg-blue-500/10 dark:text-blue-400">
+              <UserRound className="size-5" />
+            </span>
+            <div>
+              <h2 className="text-lg font-extrabold text-gray-950 dark:text-white">
+                Personal information
+              </h2>
+              <p className="mt-1 text-sm leading-5 text-gray-500 dark:text-gray-400">
+                Update the profile details used throughout your workspace.
+              </p>
             </div>
           </div>
-        </div>
 
-        {/* Right Column: Editable Account Details */}
-        <div className="min-w-0 rounded-2xl border border-gray-100 bg-white p-4 shadow-md transition-all duration-300 dark:border-gray-700/50 dark:bg-gray-800 sm:p-6 lg:col-span-2">
-          <div className="flex items-center gap-2 mb-6 pb-3 border-b border-gray-100 dark:border-gray-700/80">
-            <User className="text-blue-600 dark:text-blue-400 w-5 h-5" />
-            <h2 className="text-lg font-bold text-gray-900 dark:text-white">
-              Edit Account Information
-            </h2>
-          </div>
-
-          <form onSubmit={handleSaveChanges} className="space-y-5 [&_input]:min-h-11">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-5">
-              {/* First Name */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  First Name
+          <form onSubmit={handleSaveChanges} className="mt-6 space-y-7">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-5 sm:gap-y-5">
+              {fields.map((field, index) => (
+                <label key={field.name} className="block min-w-0">
+                  <span className="mb-2 block text-[13px] font-bold text-gray-700 dark:text-gray-300">
+                    {field.label}
+                  </span>
+                  <input
+                    ref={index === 0 ? firstNameInputRef : undefined}
+                    type={field.type || "text"}
+                    name={field.name}
+                    value={formState[field.name] || ""}
+                    onChange={handleInputChange}
+                    placeholder={field.placeholder}
+                    autoComplete={field.autoComplete}
+                    className="min-h-12 w-full rounded-xl border border-gray-200 bg-gray-50/70 px-3.5 py-3 text-base font-medium text-gray-950 outline-none transition-all duration-200 placeholder:text-gray-400 hover:border-gray-300 hover:bg-white focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900/40 dark:text-white dark:placeholder:text-gray-500 dark:hover:border-gray-600 dark:hover:bg-gray-900/60 dark:focus:border-blue-400 dark:focus:bg-gray-900 dark:focus:ring-blue-400/10 sm:text-sm"
+                  />
                 </label>
-                <input
-                  type="text"
-                  name="firstName"
-                  value={formState.firstName}
-                  onChange={handleInputChange}
-                  placeholder="First name"
-                  className="min-h-11 w-full rounded-xl border border-gray-200 bg-transparent px-4 py-2.5 text-sm font-medium text-gray-900 transition-all placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:border-gray-700 dark:text-white dark:focus:ring-blue-400/30"
-                />
-              </div>
-
-              {/* Last Name */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  name="lastName"
-                  value={formState.lastName}
-                  onChange={handleInputChange}
-                  placeholder="Last name"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Email Address */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={formState.email}
-                  onChange={handleInputChange}
-                  placeholder="Email address"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Phone Number */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Phone Number
-                </label>
-                <input
-                  type="text"
-                  name="phone"
-                  value={formState.phone}
-                  onChange={handleInputChange}
-                  placeholder="Phone number"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Company */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Company
-                </label>
-                <input
-                  type="text"
-                  name="company"
-                  value={formState.company}
-                  onChange={handleInputChange}
-                  placeholder="Company"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Job Title / Role */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Job Title
-                </label>
-                <input
-                  type="text"
-                  name="role"
-                  value={formState.role}
-                  onChange={handleInputChange}
-                  placeholder="Job title"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Location */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Location
-                </label>
-                <input
-                  type="text"
-                  name="location"
-                  value={formState.location}
-                  onChange={handleInputChange}
-                  placeholder="Location"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
-
-              {/* Department */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-400 dark:text-gray-500">
-                  Department
-                </label>
-                <input
-                  type="text"
-                  name="department"
-                  value={formState.department}
-                  onChange={handleInputChange}
-                  placeholder="Department"
-                  className="w-full px-4 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 bg-transparent text-gray-900 dark:text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 dark:focus:ring-blue-400/30 transition-all text-sm font-medium"
-                />
-              </div>
+              ))}
             </div>
 
-            {/* Buttons control footer panel */}
-            <div className="flex flex-col-reverse gap-3 border-t border-gray-200 pt-4 dark:border-gray-700/80 sm:flex-row sm:justify-end">
+            <div className="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 dark:border-gray-700/80 sm:flex-row sm:items-center sm:justify-end">
               <button
                 type="button"
                 onClick={handleCancel}
                 disabled={isSaving}
-                className="min-h-11 w-full rounded-xl border border-gray-200 px-5 py-2.5 text-sm font-bold text-gray-600 hover:bg-slate-50 focus:outline-none disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-700/50 sm:w-auto"
+                className="min-h-11 w-full rounded-xl border border-gray-200 bg-white px-5 text-sm font-bold text-gray-700 transition-all duration-200 hover:border-gray-300 hover:bg-gray-50 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/10 disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-gray-600 dark:hover:bg-gray-700 sm:w-auto"
               >
-                Cancel
+                Discard changes
               </button>
               <button
                 type="submit"
                 disabled={isSaving}
-                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/50 disabled:opacity-75 sm:w-auto"
+                className="flex min-h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 text-sm font-bold text-white shadow-sm shadow-blue-600/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md hover:shadow-blue-600/25 focus:outline-none focus-visible:ring-4 focus-visible:ring-blue-500/20 disabled:cursor-wait disabled:translate-y-0 disabled:opacity-75 sm:w-auto"
               >
                 {isSaving ? (
-                  <>
-                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Saving...</span>
-                  </>
+                  <LoaderCircle className="size-4 animate-spin" />
                 ) : (
-                  <>
-                    <CheckCircle size={16} />
-                    <span>Save Changes</span>
-                  </>
+                  <Check className="size-4" />
                 )}
+                {isSaving ? "Saving..." : "Save changes"}
               </button>
             </div>
           </form>
-        </div>
+        </section>
       </div>
     </div>
   );

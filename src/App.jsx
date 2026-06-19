@@ -219,7 +219,7 @@ function AppLayout() {
         <div className="min-w-0 max-w-full flex-1">
           <Navbar />
 
-          <main className="min-w-0 max-w-full p-4 pb-24 pt-20 text-gray-900 transition-colors duration-200 dark:text-white md:p-5 lg:p-6">
+          <main className="min-w-0 max-w-full p-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-20 text-gray-900 transition-colors duration-200 dark:text-white md:p-5 lg:p-6">
             <AppRoutes />
           </main>
         </div>

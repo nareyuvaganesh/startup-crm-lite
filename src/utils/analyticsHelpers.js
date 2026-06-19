@@ -588,7 +588,10 @@ export const filterLeadsByRange = (leads = [], range = "30d", now = new Date()) 
 
   return safeLeads.filter((lead) => {
     const date = validDate(lead?.createdAt);
-    return date && date >= cutoff && date <= now;
+    // Legacy leads created before date tracking was added still belong in CRM
+    // totals. Keep them visible instead of silently dropping them from every
+    // analytics range.
+    return !date || (date >= cutoff && date <= now);
   });
 };
 
